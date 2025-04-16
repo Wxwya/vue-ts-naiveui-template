@@ -1,0 +1,8 @@
+/* @import 'tailwindcss'; */
+@import "tailwindcss/utilities.css";
+@import "tailwindcss/theme.css";
+@import "tailwindcss/preflight.css";
+@plugin "@iconify/tailwind4" {
+  prefix: "xwya";
+  prefixes: solar;
+}
