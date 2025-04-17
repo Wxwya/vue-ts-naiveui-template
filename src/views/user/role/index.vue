@@ -1,28 +1,27 @@
-<script lang="ts" setup>
+<script  setup>
 // solar--user-bold 图标展示
 import { computed, ref, inject, h,onMounted,usePage,closeModal } from "@/rely/lib"
 import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon,NButton } from "@/rely/page"
-import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import Acruibs from "./actions.vue"
 import UpModal from "./upModal.vue"
 class QueryForm { 
-  role_name: string = ''
-  description: string = ''
+  role_name= ''
+  description = ''
 }
-const api = inject("api") as Api
-const { data,page,total,loading} = usePage<Role.RoleTableRow>() 
+const api = inject("api")
+const { data,page,total,loading} = usePage() 
 const queryFormData = ref(new QueryForm())
-const rowIds = ref<DataTableRowKey[]>([])
+const rowIds = ref([])
 const isSearch = ref(false)
-const queryFormItem = computed<FormItemRowStruct[]>(() => ([
+const queryFormItem = computed(() => ([
   { type: 'input', item: { label: '角色名称', path: 'role_name' }, content: {placeholder: '请输入角色名称'}   },
   { type: 'input', item: { label: '角色描述', path: 'description', }, content: { placeholder: '请输入描述', } }
 ]
 ))
-const onSelect = (keys:DataTableRowKey[]) => {
+const onSelect = (keys) => {
   rowIds.value = keys
 }
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -32,11 +31,11 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
@@ -46,12 +45,12 @@ const getData = async () => {
   loading.value=true
   const res = await api.role.getRoleList(Object.assign(isSearch.value ?queryFormData.value: {},page))
   if (res.code === 200) { 
-    data.value = res.data!.list
-    total.value = res.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value=false
 }
-const onSearch = (state:boolean, change:Function) => { 
+const onSearch = (state, change) => { 
   page.pageNum = 1
   if (state) { 
     queryFormData.value = new QueryForm()
@@ -71,7 +70,7 @@ const onBatchDelete = () => {
     }
   })
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.role.delRole( id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -79,7 +78,7 @@ const onDelete = async (id?:number) => {
   }
   m.destroy()
 }
-const onOpenModal = (title:string, row?:Role.RoleTableRow) => { 
+const onOpenModal = (title, row) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -89,7 +88,7 @@ const onOpenModal = (title:string, row?:Role.RoleTableRow) => {
    content: () => h(UpModal, {close:()=>closeModal(m),row,getData})
   })
 }
-const initColumns = ():DataTableColumns<Role.RoleTableRow> => {
+const initColumns = () => {
   return [
     {
       type: 'selection',

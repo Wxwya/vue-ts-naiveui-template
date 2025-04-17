@@ -1,30 +1,29 @@
-<script lang="ts" setup>
+<script  setup>
 
 import { usePage, useUserStore, OptionsKeyEnums, closeModal, inject,ref, onMounted, h, useRouter, useRoute,computed } from "@/rely/lib"
 import {NSwitch,NButton,XwyaForm,XwyaIcon,XwyaPopover,XwyaButton,XwyaTable}from "@/rely/page"
 import Actions from './actions.vue';
 import UpModal from './upModal.vue';
-import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 class QueryForm { 
-  dict_name: string = ''
-  username: string = ''
-  status:string | null =null
+  dict_name= ''
+  username= ''
+  status =null
 }
-const api = inject("api") as Api
-const { data, page, total, loading } = usePage<Dict.DictInfo>() 
+const api = inject("api")
+const { data, page, total, loading } = usePage() 
 const { userInfo,defaultOptions} = useUserStore()
 const { push } = useRouter()
 const { query } = useRoute()
 const queryFormData = ref(new QueryForm())
-const rowIds = ref<DataTableRowKey[]>([])
+const rowIds = ref([])
 const isSearch = ref(false)
-const queryFormItem = computed<FormItemRowStruct[]>(() => ([
+const queryFormItem = computed(() => ([
   { type: "input", item: { label: '字典名称', path: 'dict_label', }, content: { placeholder: '请输入字典类型' } },
   { type: "input", item: { label: '创建者', path: 'username', }, content: { placeholder: '请输入创建者', } },
   { type: "select", item: { label: "状态", path: "status", }, content: { placeholder: "请选择状态", options:defaultOptions[OptionsKeyEnums.STATUS]} },
 ]
 ))
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -34,29 +33,29 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
   }
 }))
-const onSelect = (keys:DataTableRowKey[]) => {
+const onSelect = (keys) => {
   rowIds.value = keys
 }
 const getData = async () => { 
   loading.value=true
-  const res = await api.dict.getDictList(Object.assign(isSearch.value ? queryFormData.value : {}, page, { dict_type_id: Number((query as any).id) }))
+  const res = await api.dict.getDictList(Object.assign(isSearch.value ? queryFormData.value : {}, page, { dict_type_id: Number(query.id) }))
   if (res.code === 200) { 
-    data.value = res!.data!.list
-    total.value = res!.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value=false
 }
-const onSearch = (state:boolean, change:Function) => { 
+const onSearch = (state, change) => { 
   page.pageNum = 1
   if (state) { 
     queryFormData.value = new QueryForm()  
@@ -65,7 +64,7 @@ const onSearch = (state:boolean, change:Function) => {
   getData()
   change()
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.dict.delDict(id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -84,25 +83,23 @@ const onBatchDelete = () => {
     }
   })
 }
-const onOpenModal = (title:string, row?:Dict.DictInfo) => { 
+const onOpenModal = (title, row) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
     style: {
       width:"600px"
     },
-   content: () => h(UpModal, {close:()=>closeModal(m),row:row!,getData,userInfo:userInfo!,dict_type_id:(query as any).id,total:total.value})
+   content: () => h(UpModal, {close:()=>closeModal(m),row,getData,userInfo,dict_type_id:query.id,total:total.value})
   })
-   
-
 }
-const changeStatus = async (id:number, status:boolean) => { 
+const changeStatus = async (id, status) => { 
   const res = await api.dict.changeDictStatus({ id, status: status })
   if (res.code === 200) { 
     getData()
   }
 }
-const initColumns = ():DataTableColumns<Dict.DictInfo> => {
+const initColumns = ()=> {
   return [
     {
       type: 'selection',
@@ -123,8 +120,8 @@ const initColumns = ():DataTableColumns<Dict.DictInfo> => {
     {
       title: "状态",
       key: "status",
-      render(row:Dict.DictInfo) { 
-        return h(NSwitch, { value: row.status, 'on-update:value': (val) => changeStatus(row.id!,val) })
+      render(row) { 
+        return h(NSwitch, { value: row.status, 'on-update:value': (val) => changeStatus(row.id,val) })
       }
     },
     {
@@ -139,7 +136,7 @@ const initColumns = ():DataTableColumns<Dict.DictInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row:Dict.DictInfo) {
+      render(row) {
         return h(Actions, { upData: () => onOpenModal("修改字典", row), delData: () =>onDelete(row.id), toSub: () => push(`/system/subDict?id=${row.id}`)  })
       }
     }

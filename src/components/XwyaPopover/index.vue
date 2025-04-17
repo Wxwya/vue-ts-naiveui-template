@@ -7,7 +7,7 @@
   </n-tooltip>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { defineProps } from 'vue'
 import { NTooltip } from 'naive-ui'
 defineProps({

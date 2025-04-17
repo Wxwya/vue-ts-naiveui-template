@@ -1,30 +1,29 @@
-<script lang="ts" setup>
+<script  setup>
 // solar--tuning-square-2-bold
 import { NSwitch } from 'naive-ui';
 import { computed, ref, inject, h,onMounted,usePage,closeModal,useUserStore,OptionsKeyEnums,useRouter} from "@/rely/lib"
 import {XwyaForm,XwyaPopover,XwyaTable,XwyaButton,XwyaIcon,NButton } from "@/rely/page"
-import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import UpModal from "@/components/MenuModal/index.vue";
 import Actions from './actions.vue';
 class QueryForm { 
-  title: string = ''
-  path: string = ''
+  title = ''
+  path = ''
   status= null
 }
-const api = inject("api") as Api
+const api = inject("api") 
 const { defaultOptions} = useUserStore()
-const { data, page, total, loading } = usePage<Menu.MenuInfo>() 
+const { data, page, total, loading } = usePage() 
 const { push} = useRouter()
 const queryFormData = ref(new QueryForm())
-const rowIds = ref<DataTableRowKey[]>([])
+const rowIds = ref([])
 const isSearch = ref(false)
-const queryFormItem = computed<FormItemRowStruct[]>(() => ([
+const queryFormItem = computed(() => ([
   { type: "input", item: { label: '菜单名称', path: 'title', }, content: { placeholder: '请输入菜单名称' } },
   { type: "input", item: { label: '菜单路径', path: 'path', }, content: { placeholder: '请输入菜单路径' } },
   { type: "select", item: { label: "状态", path: "status"  }, content: {placeholder: "请选择状态", options: defaultOptions[OptionsKeyEnums.STATUS]} }
   
 ]))
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -34,20 +33,20 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = 1
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageSize = pageSize
     getData()
   }
 }))
-const onSelect = (keys:DataTableRowKey[]) => {
+const onSelect = (keys) => {
   rowIds.value = keys
 }
-const initColumns = ():DataTableColumns<Menu.MenuInfo> => {
+const initColumns = () => {
   return [
     {
       type: 'selection',
@@ -68,22 +67,22 @@ const initColumns = ():DataTableColumns<Menu.MenuInfo> => {
     {
       title: "状态",
       key: "status",
-      render(row:Menu.MenuInfo) { 
-        return h(NSwitch, { value: row.status!, 'on-update:value': (val) => changeStatus(row.id!,val) })
+      render(row) { 
+        return h(NSwitch, { value: row.status, 'on-update:value': (val) => changeStatus(row.id,val) })
       }
     },
     {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row:Menu.MenuInfo) {
+      render(row) {
         return h(Actions, { upData: () => onOpenModal("修改菜单", row), delData: () => onDelete(row.id), toSub: () => push(`/user/subMenu?id=${row.id}&prefix=${row.path}`) })
       }
     }
 
   ]
 }
-const onSearch = (state:boolean, change:Function) => { 
+const onSearch = (state, change) => { 
   page.pageNum = 1
   if (state) { 
     queryFormData.value = new QueryForm() 
@@ -92,7 +91,7 @@ const onSearch = (state:boolean, change:Function) => {
   getData()
   change()
 }
-const onOpenModal = (title:string,row?:Menu.MenuInfo ) => { 
+const onOpenModal = (title,row ) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -113,7 +112,7 @@ const onBatchDelete = () => {
     }
   })
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.menu.delMenu(id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -125,12 +124,12 @@ const getData = async () => {
   loading.value = true
   const res = await api.menu.getMenuList(Object.assign(isSearch.value? queryFormData.value : {},page))
   if (res.code === 200) { 
-    data.value = res.data!.list
-    total.value = res.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value = false
 }
-const changeStatus = async (id: number, val: boolean) => {
+const changeStatus = async (id, val) => {
   const res = await api.menu.changeMenuStatus({ id, status: val })
   if (res.code === 200) { 
     getData()

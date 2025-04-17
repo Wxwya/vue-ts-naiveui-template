@@ -1,23 +1,22 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" :key="formItem!.path! + formItem!.isShow!" v-bind="{ ...$attrs, ...formItem }">
-    <n-select v-model:value="value![formItem!.path!]" v-bind="(content as FormItemContentMap['select'])" />
+  <n-form-item v-show="!formItem.isShow" :key="formItem.path + formItem.isShow" v-bind="{ ...$attrs, ...formItem }">
+    <n-select v-model:value="value[formItem.path]" v-bind="content" />
   </n-form-item>
 </template>
-<script setup lang="ts">
+<script setup >
 import { defineProps } from 'vue'
 import {NFormItem, NSelect} from 'naive-ui'
-import type {PropType} from "vue"
 defineProps({
   value:{
     type: Object,
     default: () => ({})
   },
   formItem:{
-    type: Object as PropType<FormItemRowStateStruct>,
+    type: Object ,
     default: () => ({})
   },
   content:{
-    type: Object as PropType<FormItemRowStruct>,
+    type: Object ,
     default: () => ({})
   }
 })

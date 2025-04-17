@@ -1,14 +1,13 @@
-<script lang="ts" setup>
+<script  setup>
 import { defineProps } from 'vue'
-import type { PropType } from 'vue'
 import {XwyaPopover,XwyaButton,XwyaRemind } from "@/rely/page"
 const props = defineProps({
   delData: {
-    type: Function as PropType<() => void>,
+    type: Function ,
     default: () => { },
   },
   upData: {
-    type: Function as PropType<() => void>,
+    type: Function ,
     default: () => { },
   }
 

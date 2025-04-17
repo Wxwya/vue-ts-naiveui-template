@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script  setup>
 import { NDrawer, NMenu } from 'naive-ui'
 import useLayout from './useLayout'
 const { systemConfig, menus, path, onUpdareValue, renderMenuIcon} = useLayout()

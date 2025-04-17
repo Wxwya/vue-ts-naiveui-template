@@ -1,12 +1,11 @@
-<script lang="ts" setup>
+<script  setup>
 import {defineProps,ref, computed,OptionsKeyEnums,useUserStore } from "@/rely/lib"
 import { generateDictType } from '@/api/dict';
 import {XwyaForm,XwyaButton} from "@/rely/page"
-import type { PropType } from 'vue'
-import type { FormRules } from "naive-ui"
+
 const props = defineProps({
   close: {
-    type: Function as PropType<() => void>,
+    type: Function,
     default: () => { }
   },
   getData: {
@@ -14,35 +13,35 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<Dict.DictTypeInfo>,
+    type: Object,
     default:()=> {}
   },
   userInfo: {
-    type: Object as PropType<SystemUser.UserInfo>,
+    type: Object,
     default: () => { }
   },
 })
 const { defaultOptions} = useUserStore()
-const formData = ref<Dict.DictTypeInfo>({
+const formData = ref({
   ...props.row,
   username:props?.row?.username? props.row.username:props.userInfo.username,
 })
 const loading = ref(false)
-const formItemData = computed<FormItemRowStruct[]>(() => ([
+const formItemData = computed(() => ([
   { type: 'input', item: { label: '字典名称', path: 'dict_name', }, content: { placeholder: '请输入字典名称' } },
   { type: 'input', item: { label: '字典类型', path: 'type_name', }, content: { placeholder: '请输入字典类型' } },
   { type: 'select', item: { label: "系统配置", path: "is_default", isShow: !(props.userInfo.account == 'admin') }, content: { placeholder: "请选择是否系统配置", options: defaultOptions[OptionsKeyEnums.YESNO], ruleType: "array", } },
   { type: 'input', item: { label: '备注:', path: 'comment' }, content: {placeholder: '请输入备注'}},
 ]))
-const rules  = computed<FormRules>(() => {
-  return formItemData.value.reduce((acc: FormRules, cur:any, _) => {
+const rules  = computed(() => {
+  return formItemData.value.reduce((acc, cur) => {
     if(cur.item.path==='is_default' || cur.item.path==="comment"  ) return acc 
     acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder,type:cur.item.ruleType }]
     return acc
   }, {})
 })
-const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
+const submit = async (validate) => { 
+  validate()(async (errors) => { 
     if (errors) return 
     loading.value = true
     const res = await generateDictType({...formData.value})

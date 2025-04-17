@@ -27,7 +27,7 @@
   </n-layout>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { NLayout, NLayoutSider, NMenu, NLayoutHeader, NFlex} from 'naive-ui'
 import Down from "./down.vue"
 import useLayout from './useLayout'

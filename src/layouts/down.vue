@@ -8,7 +8,7 @@
   </n-dropdown>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { NDropdown, NAvatar, NSpace } from 'naive-ui'
@@ -17,7 +17,7 @@ import useUserStore from '@/store/userStore'
 import settings from '@/settings'
 const systemConfigStore = useSystemConfigStore()
 const  userStore=useUserStore()
-const api = inject("api") as Api
+const api = inject("api")
 const { push } = useRouter()
 const options = [
   {
@@ -37,7 +37,7 @@ const options = [
     key: 'logout',
   }
 ]
-const handleSelect = (key: string | number) => { 
+const handleSelect = (key) => { 
   switch (key) { 
     case 'layout':
     systemConfigStore.changeLayout()

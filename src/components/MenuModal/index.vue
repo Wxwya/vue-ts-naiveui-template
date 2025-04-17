@@ -1,12 +1,10 @@
-<script lang="ts" setup>
+<script setup>
 import { defineProps,ref, computed } from "vue"
 import { generateMenu } from '@/api/menu';
 import { XwyaForm, XwyaButton } from "@/rely/page"
-import type {PropType} from "vue"
-import type { FormRules } from "naive-ui"
 const props = defineProps({
   close: {
-    type: Function as PropType<() => void>,
+    type: Function ,
     default: () => { }
   },
   getData: {
@@ -14,7 +12,7 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<Menu.MenuInfo>,
+    type: Object,
     default:()=> {}
   },
   total: {
@@ -37,7 +35,7 @@ const formData = ref({
   path: props.prefix?props.prefix:props.row?.path
 });
 const loading = ref(false)
-const formItemData = computed<FormItemRowStruct[]>(() => ([
+const formItemData = computed(() => ([
   { type: 'input', item: { label: '菜单名称', path: 'title', }, content: { placeholder: '请输入角色名称' } },
   { type: 'input', item: { label: '菜单图标', path: 'icon', }, content: { placeholder: '请输入菜单图标' } },
   { type: 'input', item: { label: '菜单路径', path: 'path', }, content: { placeholder: '请输入菜单路径' } },
@@ -46,14 +44,14 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   { type: 'switch', item: { label: '总是显示', path: 'always_show',isShow:!!props.parent_id } },
 ]))
 const rules= computed(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
+  return formItemData.value.reduce((acc, cur, _) => {
     if(cur.item.path==='icon' || cur.item.path==='hidden' || cur.item.path==='always_show') return acc
     acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder}]
     return acc
   }, {})
 })
-const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
+const submit = async (validate) => { 
+  validate()(async (errors) => { 
     if (errors) return 
     loading.value = true
     if (props.parent_id) { 

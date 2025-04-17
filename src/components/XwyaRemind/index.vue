@@ -17,19 +17,17 @@
   </n-popconfirm>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { defineProps } from 'vue'
 import { NPopconfirm, NTooltip, NIcon } from 'naive-ui'
 import { XwyaIcon } from '@/rely/page'
-import type { PropType } from 'vue'
-import type { TooltipProps, PopconfirmProps } from 'naive-ui'
 defineProps({
   tooltipConfig: {
-    type: Object as PropType<TooltipProps>,
+    type: Object,
     default: () => { }
   },
   popConfig: {
-    type: Object as PropType<PopconfirmProps>,
+    type: Object,
     default: () => { }
   },
   popText: {

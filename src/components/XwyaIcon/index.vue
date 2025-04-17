@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script  setup>
 import { defineProps,computed } from 'vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import { isIconType } from '@/utils/setIconfont';

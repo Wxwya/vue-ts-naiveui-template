@@ -1,28 +1,24 @@
-<script lang="ts" setup>
+<script  setup>
 import { computed, ref, inject, h,onMounted,usePage,closeModal,useRoute } from "@/rely/lib"
 import {XwyaForm,XwyaPopover,XwyaTable,XwyaButton,XwyaIcon,NButton} from "@/rely/page"
-import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import UpModal from "@/components/PermissionsModal/index.vue";
 import Actions from './actions.vue';
 class QueryForm {
-  permission_name: string = ''
-  description: string = ''
+  permission_name = ''
+  description = ''
 }
-type QuertPamrams = {
-  id: number
-  prefix: string
-}
-const api = inject("api") as Api
-const query= useRoute().query as unknown as QuertPamrams
-const { data, page, total, loading } = usePage<Permissions.PermissionsInfo>()
+
+const api = inject("api")
+const query= useRoute().query
+const { data, page, total, loading } = usePage()
 const queryFormData = ref(new QueryForm())
-const rowIds = ref<DataTableRowKey[]>([])
-const queryFormItem = computed<FormItemRowStruct[]>(() => ([
+const rowIds = ref([])
+const queryFormItem = computed(() => ([
   { type: 'input', item: { label: '权限名称', path: 'permission_name' }, content: { placeholder: '请输入权限名称' } },
   { type: 'input', item: { label: '权限描述', path: 'description' }, content: { placeholder: '请输入权限描述' } },
 ]))
 const isSearch = ref(false)
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -32,20 +28,20 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
   }
 }))
-const onSelect = (keys: DataTableRowKey[]) => {
+const onSelect = (keys) => {
   rowIds.value = keys
 }
-const initColumns = ():DataTableColumns<Permissions.PermissionsInfo> => {
+const initColumns = () => {
   return [
     {
       type: 'selection',
@@ -63,7 +59,7 @@ const initColumns = ():DataTableColumns<Permissions.PermissionsInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row: Permissions.PermissionsInfo) {
+      render(row) {
         return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.permission_id) })
       }
     }
@@ -81,7 +77,7 @@ const onBatchDelete = () => {
     }
   })
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.permissions.delPermissions( id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -89,7 +85,7 @@ const onDelete = async (id?:number) => {
   }
   m.destroy()
 }
-const onOpenModal = (title:string,row?:Permissions.PermissionsInfo) => {
+const onOpenModal = (title,row) => {
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -103,12 +99,12 @@ const getData = async () => {
   loading.value = true
   const res = await api.permissions.getPermissionsList(Object.assign(isSearch.value ? queryFormData.value : {}, page, {parent_id:Number(query.id)}))
   if (res.code === 200) { 
-    data.value = res.data!.list
-    total.value = res.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value = false
 }
-const onSearch = (state: boolean, change: Function) => {
+const onSearch = (state, change) => {
   page.pageNum = 1
   if (state) {
     queryFormData.value = new QueryForm()

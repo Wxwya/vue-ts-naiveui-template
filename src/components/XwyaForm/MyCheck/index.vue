@@ -1,7 +1,7 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem!.path! + formItem!.isShow!">
-    <n-checkbox-group v-model:value="value![formItem!.path!] " v-bind="(content as FormItemContentMap['check'])">
-      <n-checkbox v-for="(p, i) in (content as FormItemContentMap['check']).options" :key="p.value || i" :value="p.value"
+  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem.path + formItem.isShow">
+    <n-checkbox-group v-model:value="value[formItem.path] " v-bind="content">
+      <n-checkbox v-for="(p, i) in content.options" :key="p.value || i" :value="p.value"
         :label="p.label">
       </n-checkbox>
     </n-checkbox-group>
@@ -10,18 +10,17 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 import {NFormItem, NCheckboxGroup, NCheckbox} from 'naive-ui'
-import type {PropType} from "vue"
 defineProps({
   value:{
     type: Object,
     default: () => ({})
   },
   formItem:{
-    type: Object as PropType<FormItemRowStateStruct>,
+    type: Object,
     default: () => ({})
   },
   content:{
-    type: Object as PropType<FormItemRowStruct>,
+    type: Object,
     default: () => ({})
   }
 })

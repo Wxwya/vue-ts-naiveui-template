@@ -2,7 +2,7 @@
    <component :is="layout[systemConfig.layout]" />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import vertical from "./vertical.vue"
 import level from "./level.vue";
 import useSystemConfigStore from "@/store/systemConfigStore";

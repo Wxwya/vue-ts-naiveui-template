@@ -5,7 +5,7 @@
 
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { NConfigProvider } from 'naive-ui'
 import { zhCN, dateZhCN } from 'naive-ui'
 import {storeToRefs} from 'pinia'

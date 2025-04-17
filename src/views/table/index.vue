@@ -1,16 +1,9 @@
-<script lang="ts" setup>
+<script  setup>
 import { usePage, computed, onMounted } from '@/rely/lib'
 import XwyaTable from '@/components/XwyaTable/index.vue'
-import type { PaginationProps, DataTableColumns, DataTableRowKey } from "naive-ui"
-type User = {
-  name: string
-  age: number
-  address: string
-  sex: string
-  id: number
-}
-const { page, total, loading, data } = usePage<User>()
-const arr:User[] = Array.from({ length: 46 }).map((_, index):User => ({
+
+const { page, total, loading, data } = usePage()
+const arr = Array.from({ length: 46 }).map((_, index) => ({
   id: index + 1,
   name: `Edward King ${index}`,
   age: 32,
@@ -18,7 +11,7 @@ const arr:User[] = Array.from({ length: 46 }).map((_, index):User => ({
   address: `London, Park Lane no. ${index}`
 }
 ))
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -28,17 +21,17 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
   }
 }))
-const columns: DataTableColumns<User> = [
+const columns = [
   {
     type: 'selection',
     fixed: 'left'
@@ -60,7 +53,7 @@ const columns: DataTableColumns<User> = [
     key: 'address'
   }
 ]
-const requestData =  ():Promise<User[]> => { 
+const requestData =  () => { 
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(arr.slice((page.pageNum-1) * page.pageSize, page.pageNum * page.pageSize))
@@ -74,10 +67,10 @@ const getData = async () => {
   total.value = arr.length
   loading.value = false
 }
-const onSelect = (keys:DataTableRowKey[],rows:User[],meta:TableCheckMeta<User>) => {
+const onSelect = (keys,rows,meta) => {
   console.log(keys,rows,meta);
 }
-const setRowKey = (obj: User) => {
+const setRowKey = (obj) => {
   return obj.id
 }
 onMounted(() => { 

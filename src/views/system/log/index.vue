@@ -1,12 +1,11 @@
-<script lang="ts" setup>
+<script  setup>
 //  solar--clipboard-bold
 import { computed, inject, onMounted, } from 'vue'
 import usePage from '@/hooks/usePage';
 import XwyaTable from '@/components/XwyaTable/index.vue'
-import type { PaginationProps, DataTableColumns } from "naive-ui"
-const api = inject("api") as Api
-const { data, total, loading, page } = usePage<Log.LoggerInfo>();
-const pagination = computed<PaginationProps>(() => ({
+const api = inject("api") 
+const { data, total, loading, page } = usePage();
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -16,18 +15,18 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
   }
 }))
 
-const initColumns = (): DataTableColumns<Log.LoggerInfo> => {
+const initColumns = () => {
   return [
     {
       title: '序号',
@@ -92,8 +91,8 @@ const getData = async () => {
   loading.value = true;
   const res = await api.system.getLogList(page)
   if (res.code === 200) {
-    data.value = res!.data!.list
-    total.value = res!.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value = false;
 }

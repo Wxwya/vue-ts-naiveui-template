@@ -1,31 +1,30 @@
-<script lang="ts" setup>
+<script  setup>
 //  solar--link-square-bold
 // solar--settings-bold
 import {computed, inject, ref,onMounted,useRouter,closeModal,useUserStore,usePage,h }from "@/rely/lib"
-import type {PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import {XwyaTable,XwyaForm,XwyaPopover,XwyaButton,XwyaIcon,NButton } from "@/rely/page"
 import Acruibs from "./actions.vue"
 import UpModal from './upModal.vue';
 class QueryForm { 
-  type_name: string = ''
-  username: string = ''
+  type_name = ''
+  username = ''
 }
-const api = inject("api") as Api
-const { data, page, total, loading } = usePage<Dict.DictTypeInfo>() 
+const api = inject("api")
+const { data, page, total, loading } = usePage() 
 const { userInfo} = useUserStore()
 const { push} = useRouter()
 const queryFormData = ref(new QueryForm())
-const rowIds = ref<DataTableRowKey[]>([])
+const rowIds = ref([])
 const isSearch = ref(false)
-const queryFormItem = computed<FormItemRowStruct[]>(() => ([
+const queryFormItem = computed(() => ([
   { type: "input", item: { label: '字典类型', path: 'type_name', }, content: { placeholder: '请输入字典类型' } },
   { type: "input", item: { label: '创建者', path: 'username', }, content: { placeholder: '请输入创建者' } },
 ]
 ))
-const onSelect = (keys:DataTableRowKey[]) => {
+const onSelect = (keys) => {
   rowIds.value = keys
 }
-const pagination = computed<PaginationProps>(() => ({
+const pagination = computed(() => ({
   itemCount: total.value,
   pageSizes: [10, 20,30,40,50],
   pageSlot: 5,
@@ -35,12 +34,12 @@ const pagination = computed<PaginationProps>(() => ({
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
-  "onUpdate:page": (p: number) => {
+  "onUpdate:page": (p) => {
     page.pageNum = 1
     page.pageNum = p
     getData()
   },
-  "onUpdate:pageSize": (pageSize: number) => {
+  "onUpdate:pageSize": (pageSize) => {
     page.pageSize = pageSize
     getData()
   }
@@ -49,12 +48,12 @@ const getData = async () => {
   loading.value=true
   const res = await api.dict.getDictTypeList(Object.assign(isSearch.value ? queryFormData.value:{},page))
   if (res.code === 200) { 
-    data.value = res!.data!.list
-    total.value = res!.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value=false
 }
-const onSearch = (state:boolean, change:Function) => { 
+const onSearch = (state, change) => { 
   page.pageNum = 1
   if (state) { 
     queryFormData.value = new QueryForm()  
@@ -74,7 +73,7 @@ const onBatchDelete = () => {
     }
   })
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.dict.delDictType( id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -82,18 +81,18 @@ const onDelete = async (id?:number) => {
   }
   m.destroy()
 }
-const onOpenModal = (title:string, row?:Dict.DictTypeInfo) => { 
+const onOpenModal = (title, row) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
     style: {
       width:"600px"
     },
-   content: () => h(UpModal, {close:()=>closeModal(m),row: row!,getData,userInfo:userInfo!})
+   content: () => h(UpModal, {close:()=>closeModal(m),row: row,getData,userInfo})
   })
 }
 
-const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
+const initColumns = () => {
   return [
     {
       type: 'selection',
@@ -110,7 +109,7 @@ const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
     {
       title: "是否系统默认",
       key: "is_default",
-      render(row:Dict.DictTypeInfo) { 
+      render(row) { 
         return row.is_default ==='Y'? '是' : '否'
       }
     },
@@ -130,8 +129,8 @@ const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row:Dict.DictTypeInfo) {
-        return h(Acruibs, { upData: () => onOpenModal("修改字典类型", row), delData: () => onDelete(row.id), toSub: () => push(`/system/subDict?id=${row.id!}`)  })
+      render(row) {
+        return h(Acruibs, { upData: () => onOpenModal("修改字典类型", row), delData: () => onDelete(row.id), toSub: () => push(`/system/subDict?id=${row.id}`)  })
       }
     }
 

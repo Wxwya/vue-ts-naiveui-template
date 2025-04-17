@@ -8,7 +8,6 @@
         <XwyaButton tertiary circle iconSize="30" icon="emojione-v1--bear-face" size="large" />
       </NSpace>
     </div>
-
     <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">tabs示例(默认不是使用面板)</div>
     <div class="py-10">
       <XwyaTabs :tablist="tablist"></XwyaTabs>
@@ -28,7 +27,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {h} from 'vue'
 import { XwyaRemind,XwyaButton,XwyaTabs,NSpace } from '@/rely/page';
 const tablist = [

@@ -5,7 +5,7 @@
   </svg>
 </template>
 
-<script setup lang="ts" name="SvgIcon">
+<script setup  name="SvgIcon">
 import { defineProps, computed} from 'vue'
 import { isExternal } from "@/utils/vaildate";
 const props = defineProps({

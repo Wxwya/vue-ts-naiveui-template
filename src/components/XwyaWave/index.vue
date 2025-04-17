@@ -15,20 +15,20 @@ const props = defineProps({
   }
 })
 
-let animationFrameId:number|null = null
-const cav = ref<HTMLCanvasElement | null>(null)
-const draw = (ctx:any, bufferLength:any, dataArray:any) => {
+let animationFrameId: = null
+const cav = ref(null)
+const draw = (ctx:, bufferLength, dataArray) => {
   if (!props.isVisualizing) return; // 检查标志
   props.analyser.getByteFrequencyData(dataArray);
   animationFrameId = requestAnimationFrame(() => { draw(ctx, bufferLength, dataArray) });
-  ctx.clearRect(0, 0, cav.value!.width, cav.value!.height);
+  ctx.clearRect(0, 0, cav.value.width, cav.value.height);
   const barWidth = 5
   let barHeight;
   let x = 0;
   for (let i = 0; i < bufferLength; i++) {
     barHeight = dataArray[i];
     ctx.fillStyle = 'rgb(' + 255 + ',255,255)';
-    ctx.fillRect(x, cav.value!.height - barHeight / 2, barWidth, barHeight / 2);
+    ctx.fillRect(x, cav.value.height - barHeight / 2, barWidth, barHeight / 2);
     x += barWidth + 1;
   }
 };

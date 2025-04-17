@@ -1,20 +1,18 @@
-<script lang="ts" setup>
+<script  setup>
 import { defineProps,ref, computed } from "vue"
 import {XwyaForm,XwyaButton } from "@/rely/page"
 import { generatePermissions } from '@/api/permissions'; 
-import type {PropType} from "vue"
-import type { FormRules } from "naive-ui"
 const props = defineProps({
   close: {
-    type: Function as PropType<() => void>,
+    type: Function ,
     default: () => { }
   },
   getData: {
-    type: Function as PropType<() => void>,
+    type: Function,
     default: () => { }
   },
   row: {
-    type: Object as PropType<Permissions.PermissionsInfo>,
+    type: Object,
     default: {}
   },
   parent_id: {
@@ -26,23 +24,23 @@ const props = defineProps({
     default: ''
   }
 })
-const formData = ref<Permissions.PermissionsInfo>({
+const formData = ref({
   ...props.row,
   permission_name:props.prefix?props.prefix:props.row?.permission_name
 });
 const loading = ref(false)
-const formItemData = computed<FormItemRowStruct[]>(() => ([
+const formItemData = computed(() => ([
   { type: 'input',item: {label: '权限名称', path: 'permission_name'}, content: {placeholder: '请输入权限名称'}  },
   {type: 'input', item: {label: '权限描述', path: 'description'}, content: {placeholder: '请输入权限描述',},   },
 ]))
 const rules= computed(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
+  return formItemData.value.reduce((acc, cur, _) => {
     acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder}]
     return acc
   }, {})
 })
-const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
+const submit = async (validate) => { 
+  validate()(async (errors) => { 
     if (errors) return 
     loading.value = true
     if (props.parent_id) { 

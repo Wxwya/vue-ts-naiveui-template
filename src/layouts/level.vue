@@ -30,7 +30,7 @@
   </n-layout>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { computed } from 'vue'
 import { NLayout, NLayoutSider, NMenu, NLayoutHeader} from 'naive-ui'
 import Down from "./down.vue"
@@ -39,7 +39,7 @@ import set from "@/settings"
 import MobileMenu from "./mobileMenu.vue"
 import { XwyaIcon } from '@/rely/page'
 const { systemConfig, menus, path, onUpdareValue, renderMenuIcon } = useLayout()
-const getImgUrl = computed<string>(() => {
+const getImgUrl = computed(() => {
   return systemConfig.value.collapsed? 'https://img1.baidu.com/it/u=3430690511,3867923153&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=453' : 'https://img2.baidu.com/it/u=3294558343,1244226277&fm=253&fmt=auto&app=138&f=JPEG?w=607&h=407'
 })
 </script>

@@ -1,7 +1,7 @@
 <template>
   <n-data-table :remote="true" size="small" @update:checked-row-keys="onSelect!" bordered :single-line="false"
     :columns="columns" :data="data" :pagination="(pagination)" :paginate-single-page="false"
-    :loading="loading" :striped="true" :row-key="(r) => r.id" :scroll-x="1024" v-bind="$attrs">
+    :loading="loading" :striped="true" :row-key="(r) => r.id" :scroll-x="1660" v-bind="$attrs">
     <template v-for="(value, name) in $slots" #[name] :key="name">
       <slot :name="name" :slot="value"></slot>
     </template>
@@ -11,15 +11,13 @@
 <script lang="ts" setup generic="T">
 import { defineProps } from "vue";
 import { NDataTable } from "naive-ui";
-import type {PropType} from "vue";
-import type { PaginationProps, DataTableColumns, DataTableRowKey, DataTableRowData } from "naive-ui";
 defineProps({
   columns: {
-    type: Array as PropType<DataTableColumns<T>>,
+    type: Array,
     default: () => []
   },
   data: {
-    type: Array as PropType<DataTableRowData[]>,
+    type: Array,
     default: () => []
   },
   loading: {
@@ -27,11 +25,11 @@ defineProps({
     default: false
   },
   pagination: {
-    type: Object as PropType<PaginationProps>,
+    type: Object,
     default: () => ({})
   },
   onSelect: {
-    type: Function as PropType<(rowKeys: DataTableRowKey[], rows: T[], meta: TableCheckMeta<T>) => void>,
+    type: Function,
     default: () => () => { }
   }
 })

@@ -1,25 +1,24 @@
-<script lang="ts" setup>
+<script setup>
 import { defineProps } from 'vue'
 import { NFormItem, NTreeSelect } from "naive-ui";
-import type {PropType} from "vue"
 defineProps({
   value:{
     type: Object,
     default: () => ({})
   },
   formItem:{
-    type: Object as PropType<FormItemRowStateStruct>,
+    type: Object ,
     default: () => ({})
   },
   content:{
-    type: Object as PropType<FormItemRowStruct>,
+    type: Object ,
     default: () => ({})
   }
 })
 </script>
 <template>
-  <n-form-item v-show="!formItem.isShow" :key="formItem!.path! + formItem!.isShow!" v-bind="{ ...$attrs, ...formItem }">
-    <n-tree-select v-model:value="value![formItem!.path!]" v-bind="(content as FormItemContentMap['tree'])" />
+  <n-form-item v-show="!formItem.isShow" :key="formItem.path + formItem.isShow" v-bind="{ ...$attrs, ...formItem }">
+    <n-tree-select v-model:value="value[formItem.path]" v-bind="content" />
   </n-form-item>
 </template>
 <style lang="scss" scoped></style>

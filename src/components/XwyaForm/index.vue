@@ -19,11 +19,9 @@
 
   </n-form>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { defineProps, ref,computed,defineExpose } from "vue"
-import type { PropType } from "vue"
 import { NForm, NFlex } from "naive-ui";
-import type { FormInst } from "naive-ui";
 import MyInput from "./MyInput/index.vue"
 import MyCheck from "./MyCheck/index.vue"
 import MySelect from "./MySelect/index.vue"
@@ -37,7 +35,7 @@ import MyTransfer from './MyTransfer/index.vue'
 import MyAutoInput from "./MyAutoInput/index.vue"
 import MyUpload from './MyUpload/index.vue'
 import MyTreeSelect from './MyTreeSelect/index.vue'
-const type: ComponentMap = {
+const type= {
   input: MyInput,
   check: MyCheck,
   select: MySelect,
@@ -58,7 +56,7 @@ const props =defineProps({
     default: () => ({})
   },
   itemList: {
-    type: Array as PropType<FormItemRowStruct[]>,
+    type: Array ,
     default: () => []
   },
   row: {
@@ -70,8 +68,8 @@ const props =defineProps({
     default: 1
   },
 })
-const disabled = ref<boolean>(false)
-const formRef = ref<FormInst | null>(null)
+const disabled = ref(false)
+const formRef = ref(null)
 const colNum = computed(() => {
   let count =  Math.ceil(props.itemList.length / props.row)
   if (props.col > count)  return count
@@ -85,7 +83,7 @@ const onChange = () => {
   disabled.value = !disabled.value
 }
 const validate = () => {
-  return formRef.value!.validate!
+  return formRef.value.validate
 }
 const reset = () => {
   formRef.value && formRef.value.restoreValidation()

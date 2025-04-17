@@ -1,8 +1,6 @@
-<script lang="ts" setup>
+<script  setup>
 import { ref,computed,defineProps } from "vue"
-import type {PropType} from "vue"
 import { generateUser } from "@/api/user"
-import type { FormRules } from "naive-ui"
 import {XwyaForm,XwyaButton } from "@/rely/page"
 const props = defineProps({
   rolesOption: {
@@ -10,22 +8,22 @@ const props = defineProps({
     default: () => [],
   },
   close: {
-    type: Function as PropType<() => void>,
+    type: Function,
     default: () => { }
   },
   getData: {
-    type: Function as PropType<() => void>,
+    type: Function,
     default: () => { }
   },
   row: {
-    type: Object as PropType<SystemUser.UserInfo>,
-    default: {}
+    type: Object,
+    default: ()=>{}
   }
 
 })
-const formData = ref<SystemUser.UserInfo>({...props.row})
-const loading = ref<boolean>(false)
-const formItemData = computed<FormItemRowStruct[]>(() => ([
+const formData = ref({...props.row})
+const loading = ref(false)
+const formItemData = computed(() => ([
   { type: 'input', item: { label: '用户名', path: 'username',ruleType:"string" }, content: {placeholder: '请输入用户名',}},
   { type: 'input',item: { label: '账号', path: 'account',ruleType:"string" }, content: {placeholder: '请输入账号'} },
   { type: 'input',item: { label: "邮箱", path: "email",ruleType:"string" }, content: {placeholder: "请输入邮箱",} },
@@ -33,15 +31,15 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   {type: 'input',item: { label:"密码",path:"password",ruleType:"string" },content: {placeholder:"请输入密码",type:"password"}},
   { type: "select", item: { label: "角色", path: "role_ids", ruleType: "array" }, content: {filterable:true,multiple:true, placeholder:"请选择角色",options:props.rolesOption}},
 ]))
-const rules= computed<FormRules>(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
+const rules= computed(() => {
+  return formItemData.value.reduce((acc, cur) => {
     if(cur.item.path==='password' && props.row.id) return acc 
-    acc[(cur as FormItemRowStruct)!.item!.path!] = [{ required: true, trigger: [],message:(cur.content.placeholder) as string,type:cur.item.ruleType }]
+    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder,type:cur.item.ruleType }]
     return acc
   }, {})
 })
-const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
+const submit = async (validate) => { 
+  validate()(async (errors) => { 
     if (errors) return 
     loading.value = true
   const res = await generateUser(formData.value)

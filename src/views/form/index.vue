@@ -36,19 +36,18 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { ref, computed } from 'vue'
 import {NButton} from 'naive-ui'
 import XwyaForm from '@/components/XwyaForm/index.vue'
-import type { FormRules } from 'naive-ui'
 class QueryFormData {
   remarks = ''
   address = ""
   remarks221214222 = ""
   a1 = ""
 }
-const queryFormData = ref<any>(new QueryFormData())
-const defaultOptions:GlobalOptions<number>[]= [{ label: "选项1", value: 1 }, { label: "选项2", value: 2 }]
+const queryFormData = ref(new QueryFormData())
+const defaultOptions= [{ label: "选项1", value: 1 }, { label: "选项2", value: 2 }]
 const oo = computed(() => {
   return ['@gmail.com', '@163.com', '@qq.com'].map((suffix) => {
     const prefix = queryFormData.value.remarks221214222.split('@')[0]
@@ -65,7 +64,7 @@ const queryFormItem = [
   { type: 'input',item: {label: '备注:', path: 'remarks2',}, content: {placeholder: '请输入地址'}  },
 ]
 //  如果要使用auto输入框 必须是ref包裹 
-const queryFormItem2 = ref<FormItemRowStruct[]>([
+const queryFormItem2 = ref([
   { type: 'input', item: { label: 'input输入框:', path: 'a1' }, content: {placeholder: '请输入地址'}},
   { type: 'input', item: {label: 'textarea文本框:', path: 'a2'}, content:{type:"textarea",placeholder: '请输入地址'}   },
   { type: 'auto', item: { path: 'a3',label: 'auto输入框:'  }, content: {options: oo.value} },
@@ -83,11 +82,11 @@ const queryFormItem2 = ref<FormItemRowStruct[]>([
   { type: 'transfer', item: { label: 'transfer穿梭框:', path: 'a15', },content: {options: defaultOptions}  },
   { type: 'upload', item: { label: '图片上传:', path: 'a16' } },
 ])
-const rules= computed<FormRules>(() => {
-  return queryFormItem2.value.reduce((acc: FormRules, cur:any, _) => {
-    acc[(cur as FormItemRowStruct).item!.path!] = [{ required: true, trigger: ['blur'], }]
+const rules= computed(() => {
+  return queryFormItem2.value.reduce((acc, cur) => {
+    acc[cur.item.path] = [{ required: true, trigger: ['blur'], }]
     return acc
-  }, {} as FormRules)
+  }, {})
 })
 
 const queryFormItem3 = computed(() => { 
@@ -99,7 +98,7 @@ const queryFormItem3 = computed(() => {
     // { label: 'auto输入框:', path: 'b4', type: 'auto', itemwidth: "100%", options: oo.value,isShow: queryFormData.value.b3 == '456' },
   ]
 })
-const submit = (validate:FormValidateFunc) => {
+const submit = (validate) => {
   console.log(queryFormData.value);
   validate()(err => {
     if (!err) {
@@ -109,7 +108,7 @@ const submit = (validate:FormValidateFunc) => {
     }
   })
 }
-const onReset = (f: Function) => {
+const onReset = (f) => {
   queryFormData.value = new QueryFormData()
   f()
 }

@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, reactive,defineProps,onMounted, onBeforeUnmount} from 'vue'
 //  下拉刷新的几种状态
 const DEFAULT_HEAD_HEIGHT = 50;
@@ -50,27 +50,27 @@ const pullState = reactive({
   headHeight: DEFAULT_HEAD_HEIGHT,
   startY: 0
 })
-const pullBox = ref<HTMLElement|null>(null)
-const mainBox = ref<HTMLElement|null>(null)
-const timer = ref<number | null>(null)
-const onTouchStart = (e: TouchEvent) => {
+const pullBox = ref(null)
+const mainBox = ref(null)
+const timer = ref(null)
+const onTouchStart = (e) => {
   if (!pullState.isPull) return;
   pullState.startY = e.changedTouches[0].clientY
 }
-const onTouchEnd = async (e: TouchEvent) => {
+const onTouchEnd = async (e) => {
   if (!pullState.isPull) return;
   pullState.startY = e.changedTouches[0].clientY - pullState.startY
   if (pullState.startY - 0.5 * DEFAULT_HEAD_HEIGHT >= DEFAULT_HEAD_HEIGHT) {
     pullState.status = 3
-    pullBox!.value!.style!.top = "0px"
-    pullBox!.value!.style!.transform = `translateY(0px)`;
-    mainBox!.value!.style!.transform = "translateY(50px)"
+    pullBox.value.style.top = "0px"
+    pullBox.value.style.transform = `translateY(0px)`;
+    mainBox.value.style.transform = "translateY(50px)"
     await props.refresh()
-    mainBox!.value!.style!.transform = "translateY(0px)"
-    pullBox!.value!.style!.top = ""
+    mainBox.value.style.transform = "translateY(0px)"
+    pullBox.value.style.top = ""
   } else {
-    mainBox!.value!.style!.transform = "translateY(0px)"
-    pullBox!.value!.style!.transform = `translateY(0px)`;
+    mainBox.value.style.transform = "translateY(0px)"
+    pullBox.value.style.transform = `translateY(0px)`;
   }
 
 }
@@ -84,13 +84,13 @@ const onTouchmove = (e) => {
   } else {
     pullState.status = 1; // 下拉即可刷新
   }
-  pullBox!.value!.style!.transform = `translateY(${t}px)`;
-  mainBox!.value!.style!.transform = `translateY(${t}px)`;
+  pullBox.value.style.transform = `translateY(${t}px)`;
+  mainBox.value.style.transform = `translateY(${t}px)`;
 }
 
 const onMainScroll = () => {
-  pullState.isPull = mainBox!.value!.scrollTop> 0 ? false : true
-  if (mainBox!.value!.scrollTop + mainBox!.value!.clientHeight >= mainBox!.value!.scrollHeight && props.finished) {
+  pullState.isPull = mainBox.value.scrollTop> 0 ? false : true
+  if (mainBox.value.scrollTop + mainBox.value.clientHeight >= mainBox.value.scrollHeight && props.finished) {
     if (timer.value) return;
     timer.value = setTimeout(async () => {
       await props.load()
@@ -100,11 +100,11 @@ const onMainScroll = () => {
 }
 
 onMounted(() => {
-  mainBox!.value!.addEventListener('scroll', onMainScroll)
+  mainBox.value.addEventListener('scroll', onMainScroll)
   props.load()
 })
 onBeforeUnmount(() => {
-  mainBox!.value!.removeEventListener('scroll', onMainScroll)
+  mainBox.value.removeEventListener('scroll', onMainScroll)
 })
 
 </script>
