@@ -1,40 +1,48 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" :key="formItem!.path! + formItem!.isShow!" v-bind="{ ...$attrs, ...formItem }">
-    <n-upload action="http://127.0.0.1:3800/upload" v-model:file-list="value![formItem!.path!]" list-type="image-card"
-      :custom-request="customRequest" v-bind="(content as FormItemContentMap['upload'])" />
+  <n-form-item v-show="!formItem.isShow" :key="formItem!.path!" v-bind="{ ...$attrs, ...formItem }">
+    <div class="flex-1">
+      <n-upload
+        v-model:file-list="value![formItem!.path!]"
+        list-type="image-card"
+        :custom-request="customRequest"
+        v-bind="content"
+      />
+      <div v-if="content.comment" class="text-zinc-400 mt-1">{{ content.comment }}</div>
+    </div>
   </n-form-item>
 </template>
+
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import { NFormItem, NUpload } from "naive-ui";
-import { uploadFile } from "@/api/system"
-import type { UploadCustomRequestOptions } from 'naive-ui';
-import type {PropType} from "vue"
+import { NFormItem, NUpload } from 'naive-ui'
+import { uploadFile } from '@/api/system'
+import type { UploadCustomRequestOptions } from 'naive-ui'
+import type { PropType } from 'vue'
 defineProps({
-  value:{
+  value: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
-  formItem:{
+  formItem: {
     type: Object as PropType<FormItemRowStateStruct>,
-    default: () => ({})
+    default: () => ({}),
   },
-  content:{
-    type: Object as PropType<FormItemRowStruct>,
-    default: () => ({})
-  }
+  content: {
+    type: Object as PropType<FormItemContentMap['upload']>,
+    default: () => ({}),
+  },
 })
 const customRequest = async ({ file, data, onFinish, onError }: UploadCustomRequestOptions) => {
   const formData = new FormData()
   if (data) {
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
       formData.append(key, data[key])
     })
   }
   formData.append('file', file.file as File)
-  const res = await uploadFile(formData,)
+  const res = await uploadFile(formData)
   if (res.code == 200) {
-    file.url = res.data
+    file.url = res.data!.url
     onFinish()
   } else {
     onError()

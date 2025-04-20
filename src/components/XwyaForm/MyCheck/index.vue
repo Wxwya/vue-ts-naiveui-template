@@ -1,10 +1,14 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem!.path! + formItem!.isShow!">
-    <n-checkbox-group v-model:value="value![formItem!.path!] " v-bind="(content as FormItemContentMap['check'])">
-      <n-checkbox v-for="(p, i) in (content as FormItemContentMap['check']).options" :key="p.value || i" :value="p.value"
+  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem!.path!">
+    <div class="flex-1">
+      <n-checkbox-group v-model:value="value![formItem!.path!] " v-bind="content">
+      <n-checkbox v-for="(p, i) in content.options!" :key="p.value || i" :value="p.value"
         :label="p.label">
       </n-checkbox>
     </n-checkbox-group>
+    <div v-if="content.comment"  class=" text-zinc-400 mt-1">{{ content.comment }}</div>
+    </div>
+   
   </n-form-item>
 </template>
 <script setup lang="ts">
@@ -21,7 +25,7 @@ defineProps({
     default: () => ({})
   },
   content:{
-    type: Object as PropType<FormItemRowStruct>,
+    type: Object as PropType<FormItemContentMap['check']>,
     default: () => ({})
   }
 })

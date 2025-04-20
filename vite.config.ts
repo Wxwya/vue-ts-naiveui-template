@@ -7,7 +7,6 @@ import Checker from 'vite-plugin-checker'
 // import Components from 'unplugin-vue-components/vite'
 // import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import tailwindcss from '@tailwindcss/vite'
 import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 import { visualizer } from 'rollup-plugin-visualizer'
 type Drop = 'console' | 'debugger'
@@ -35,7 +34,6 @@ const plugins = [
     // 指定symbolId格式
     symbolId: 'icon-[name]',
   }),
-  tailwindcss(),
   importToCDN({
     modules: [
       autoComplete('vue'),

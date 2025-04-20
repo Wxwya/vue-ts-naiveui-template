@@ -143,7 +143,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" flex-height :row-key="(r)=>r.permission_id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="flex-1" :scroll-y="true" :row-key="(r)=>r.permission_id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

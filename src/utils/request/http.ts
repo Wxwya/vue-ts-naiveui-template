@@ -22,8 +22,6 @@ class HttpRequst {
     }
   }
   startTaskRequest() {
-    console.log(this.isStartTask)
-
     this.isStartTask = true
     while (this.taskQueue.length > 0) {
       if (!this.isRefreshing) {

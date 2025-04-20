@@ -3,7 +3,7 @@ import useUserStore from '@/store/userStore'
 import settings from '@/settings'
 import cache from '@/utils/cache'
 import { TokenEnums } from '@/enums/cacheEnums'
-router.beforeEach(async (to:any, _, next:any) => {
+router.beforeEach(async (to: any, _, next: any) => {
   const userStore = useUserStore()
   const token = cache.getLocalStorage(TokenEnums.TOKEN_KEY)
   window.$bar.start()

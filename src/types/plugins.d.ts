@@ -43,19 +43,19 @@ declare global {
     ruleType?:string
   }
   type FormItemContentMap = {
-    input: InputProps
-    select: SelectProps & { options?: GlobalOptions[] }
-    date: DatePickerProps
-    radio: RadioGroupProps&RadioProps& { options?: GlobalOptions[] }
-    check: CheckboxGroupProps& CheckboxProps& { options?: GlobalOptions[] }
-    tags: DynamicTagsProps
-    number: InputNumberProps
-    switch: SwitchProps
-    cascader:  CascaderProps
-    transfer:TransferProps
-    auto:AutoCompleteProps
-    upload: UploadProps
-    tree:  TreeSelectProps
+    input: InputProps & {comment?: string}
+    select: SelectProps & { options?: GlobalOptions[],comment?: string }
+    date: DatePickerProps& {comment?: string}
+    radio: RadioGroupProps&RadioProps& { options?: GlobalOptions[],comment?: string }
+    check: CheckboxGroupProps& CheckboxProps& { options?: GlobalOptions[],comment?: string }
+    tags: DynamicTagsProps& {comment?: string}
+    number: InputNumberProps& {comment?: string}
+    switch: SwitchProps& {comment?: string}
+    cascader:  CascaderProps& {comment?: string}
+    transfer:TransferProps& {comment?: string}
+    auto:AutoCompleteProps& {comment?: string}
+    upload: UploadProps& {comment?: string}
+    tree:  TreeSelectProps& {comment?: string}
   }
   type FormTypeKey = keyof FormContentMap
 

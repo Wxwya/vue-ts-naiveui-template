@@ -2,9 +2,8 @@
 import router from "@/router"
 import store from '@/store';
 import "@/router/permission"
-import "./naive"
-import { onLoadAuth } from './auth';
-import { onLoadProvide} from  "./provide"
+import onLoadDirective from './directive';
+import { onLoadProvide } from "./provide"
 import { setCssCdn,setJsCdn } from '@/utils/setIconfont';
 if (import.meta.env.MODE === 'development' && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) { 
   const VConsole = await import('vconsole')
@@ -13,7 +12,7 @@ if (import.meta.env.MODE === 'development' && /Android|iPhone|iPad|iPod|Mobile/i
 const init = (app: any) => {
   app.use(router)
   app.use(store)
-  onLoadAuth(app)
+  onLoadDirective(app)
   onLoadProvide(app)
   setCssCdn()
   setJsCdn()

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { usePage, computed, onMounted } from '@/rely/lib'
 import XwyaTable from '@/components/XwyaTable/index.vue'
+import { storeToRefs } from 'pinia'
+import useSystemConfigStore from '@/store/systemConfigStore'
 import type { PaginationProps, DataTableColumns, DataTableRowKey } from "naive-ui"
 type User = {
   name: string
@@ -10,6 +12,7 @@ type User = {
   id: number
 }
 const { page, total, loading, data } = usePage<User>()
+const { systemConfig } = storeToRefs(useSystemConfigStore())
 const arr:User[] = Array.from({ length: 46 }).map((_, index):User => ({
   id: index + 1,
   name: `Edward King ${index}`,
@@ -25,7 +28,7 @@ const pagination = computed<PaginationProps>(() => ({
   pageSize: page.pageSize,
   showSizePicker: true,
   prefix: () => { 
-    return '共 ' + total.value + ' 条';
+    return systemConfig.value.isPc?'共 ' + total.value + ' 条':"";
   },
   page: page.pageNum,
   "onUpdate:page": (p: number) => {

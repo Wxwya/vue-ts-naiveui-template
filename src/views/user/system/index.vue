@@ -21,12 +21,12 @@ const queryFormData = ref({})
 const rowIds = ref<DataTableRowKey[]>([])
 const isSearch = ref(false)
 const queryFormItem = computed<FormItemRowStruct[]>(() => [
-  { type: 'input',  item: { label: '用户名', path: 'username' }, content: { placeholder: '请输入用户名' } },
-  { type: 'input',  item: { label: '账号', path: 'account', }, content: { placeholder: '请输入账号' } },
-  { type: 'input',  item: { label: "邮箱", path: "email", }, content: { placeholder: "请输入邮箱" } },
-  { type: 'input', item: { label: "手机号", path: "phone", }, content: { placeholder: "请输入手机号" } },
-  { type: "select", item: { label: "角色", path: "roles" }, content: { placeholder: "请选择角色", options: rolesOption.value ,multiple: true} },
-  { type: "select", item: { label: "状态", path: "status", }, content: { placeholder: "请选择状态", options: defaultOptions[OptionsKeyEnums.STATUS] } },
+  { type: 'input',itemWidth:"260px",  item: { label: '用户名', path: 'username' }, content: { placeholder: '请输入用户名' } },
+  { type: 'input',itemWidth:"260px",  item: { label: '账号', path: 'account', }, content: { placeholder: '请输入账号' } },
+  { type: 'input',itemWidth:"260px",  item: { label: "邮箱", path: "email", }, content: { placeholder: "请输入邮箱" } },
+  { type: 'input',itemWidth:"260px", item: { label: "手机号", path: "phone", }, content: { placeholder: "请输入手机号" } },
+  { type: "select",itemWidth:"260px", item: { label: "角色", path: "roles" }, content: { placeholder: "请选择角色", options: rolesOption.value ,multiple: true} },
+  { type: "select",itemWidth:"260px", item: { label: "状态", path: "status", }, content: { placeholder: "请选择状态", options: defaultOptions[OptionsKeyEnums.STATUS] } },
 ])
 const pagination = computed<PaginationProps>(() => ({
   itemCount: total.value,
@@ -166,7 +166,7 @@ onMounted(() => {
 
 <template>
   <div class="h-full flex flex-col gap-4">
-    <XwyaForm label-placement="left" :item-list="queryFormItem" v-model="queryFormData"  :row="4" >
+    <XwyaForm   label-placement="left"  :item-list="queryFormItem" v-model="queryFormData"  :row="4" :col="2" >
       <template #default="{ change, state }">
         <n-button :type="!state ? 'primary' : 'error'" @click="onSearch(state, change)">
           <XwyaIcon v-if="state" icon="solar--close-circle-bold" class="text-base" />
@@ -187,9 +187,8 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" flex-height   :columns="initColumns()" :data="data" :onSelect="onSelect" :pagination="pagination"
+    <XwyaTable class="flex-1" :scroll-y="true"   :columns="initColumns()" :data="data" :onSelect="onSelect" :pagination="pagination"
       :loading="loading" />
-
   </div>
 </template>
 

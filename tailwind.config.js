@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-import iconify from '@iconify/tailwind4'
-// const { addIconSelectors } = require('@iconify/tailwind');
+import { addIconSelectors} from '@iconify/tailwind'
+// const { addIconSelectors,addDynamicIconSelectors } = require('@iconify/tailwind');
 
 export default {
   content: [
@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [iconify({
-    prefixes: ['solar',"mdi-light"],
-  })]
+  plugins: [
+    addIconSelectors(['solar']),
+  ]
 }

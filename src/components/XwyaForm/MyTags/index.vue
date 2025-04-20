@@ -1,29 +1,32 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" :key="formItem!.path! + formItem!.isShow!" v-bind="{ ...$attrs, ...formItem }">
-    <n-dynamic-tags v-model:value="value![formItem!.path!]" v-bind="(content as FormItemContentMap['tags'])" />
+  <n-form-item v-show="!formItem.isShow" :key="formItem!.path!" v-bind="{ ...$attrs, ...formItem }">
+    <div class="flex-1">
+      <n-dynamic-tags v-model:value="value![formItem!.path!]" v-bind="content" />
+      <div v-if="content.comment" class="text-zinc-400 mt-1">{{ content.comment }}</div>
+    </div>
   </n-form-item>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import {NFormItem, NDynamicTags} from 'naive-ui'
-import type {PropType} from "vue"
+import { NFormItem, NDynamicTags } from 'naive-ui'
+import type { PropType } from 'vue'
 defineProps({
-  value:{
+  value: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
-  formItem:{
+  formItem: {
     type: Object as PropType<FormItemRowStateStruct>,
-    default: () => ({})
+    default: () => ({}),
   },
-  content:{
-    type: Object as PropType<FormItemRowStruct>,
-    default: () => ({})
-  }
+  content: {
+    type: Object as PropType<FormItemContentMap['tags']>,
+    default: () => ({}),
+  },
 })
 </script>
 <style lang="css" scoped>
 :deep(.n-tag) {
-  --n-color: "" !important;
+  --n-color: '' !important;
 }
 </style>

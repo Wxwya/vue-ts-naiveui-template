@@ -143,7 +143,7 @@ onMounted(() => {
 </script>
 
 <template>
-   <div class="h-full flex flex-col gap-4">
+   <div class="h-full flex flex-col gap-4 ">
     <XwyaForm  label-placement="left" :item-list="queryFormItem" v-model="queryFormData" :row="5">
       <template #default="{ change, state }">
         <n-button :type="!state ? 'primary' : 'error'" @click="onSearch(state, change)">
@@ -162,7 +162,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" flex-height :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="flex-1" :scroll-y="true"  :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 <style lang="scss" scoped></style>

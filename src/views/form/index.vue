@@ -1,7 +1,7 @@
 <template>
-  <div class="p-4">
+  <div class="">
     <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">查询示例</div>
-    <XwyaForm class="my-10 mx-2" label-placement="left" :item-list="queryFormItem" v-model="queryFormData" :row="7">
+    <XwyaForm class="my-10 mx-2" label-placement="left" :item-list="queryFormItem" v-model="queryFormData" :row="2" :col="2">
       <template #default="{ change, state }">
         <n-button :type="!state ? 'primary' : 'error'" @click="search(state, change)">
           {{ state ? '取消' : '搜索' }}
@@ -21,12 +21,23 @@
         </template>
       </XwyaForm>
     </div>
-    <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">动态表单示例</div>
+    <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">动态表单示例(纵向必须加row-flex)</div>
     <div class="my-10 mx-2" >
-      <XwyaForm :rules="rules" label-width="auto" label-placement="left" :item-list="queryFormItem3"
-        v-model="queryFormData" :row="5">
+      <XwyaForm  row-flex :rules="rules" label-width="120px" label-placement="left" :item-list="queryFormItem3"
+        v-model="queryFormData" >
         <template #default="{ validate, reset }">
-          <div class="">
+          <div class="flex justify-center items-center gap-2 w-full">
+            <n-button type="primary" @click="submit(validate)"> 提交</n-button>
+            <n-button @click="onReset(reset)">重置</n-button>
+          </div>
+        </template>
+      </XwyaForm>
+    </div>
+    <div class="my-10 pb-10 mx-2" >
+      <XwyaForm  :rules="rules" label-width="100px" label-placement="left" :item-list="queryFormItem3"
+        v-model="queryFormData" :row="3" :col="2" >
+        <template #default="{ validate, reset }">
+          <div class="flex justify-center gap-2 items-center w-full">
             <n-button type="primary" @click="submit(validate)"> 提交</n-button>
             <n-button @click="onReset(reset)">重置</n-button>
           </div>
@@ -46,6 +57,11 @@ class QueryFormData {
   address = ""
   remarks221214222 = ""
   a1 = ""
+  b1 = ""
+  b2 = ""
+  b3 = ""
+  a18 = void 0
+
 }
 const queryFormData = ref<any>(new QueryFormData())
 const defaultOptions:GlobalOptions<number>[]= [{ label: "选项1", value: 1 }, { label: "选项2", value: 2 }]
@@ -60,9 +76,9 @@ const oo = computed(() => {
 })
 const queryFormItem = [
   { type: 'input', item: { label: '地址:', path: 'address111' }, content: {placeholder: '请输入地址'}   },
-  { type: 'select', item: { label: '备注:', path: 'remarks222', }, content: {placeholder: '请输入备注',options: defaultOptions}     },
-  { type: 'input', item: {label: '备注:', path: 'remarks1',},content: {placeholder: '请输入地址'}  },
-  { type: 'input',item: {label: '备注:', path: 'remarks2',}, content: {placeholder: '请输入地址'}  },
+  { type: 'select', item: { label: '备注:', path: 'remarks222' }, content: {placeholder: '请输入备注',options: defaultOptions}     },
+  { type: 'input',itemWidth:"260px", item: {label: '备注:', path: 'remarks1'},content: {placeholder: '请输入地址'}  },
+  { type: 'input',itemWidth:"260px",item: {label: '备注:', path: 'remarks2'}, content: {placeholder: '请输入地址'}  },
 ]
 //  如果要使用auto输入框 必须是ref包裹 
 const queryFormItem2 = ref<FormItemRowStruct[]>([
@@ -90,12 +106,12 @@ const rules= computed<FormRules>(() => {
   }, {} as FormRules)
 })
 
-const queryFormItem3 = computed(() => { 
+const queryFormItem3 = computed<FormItemRowStruct[]>(() => { 
   return [
-    { type: 'input', item: { label: '动态input:', path: 'b1' }, content: {placeholder: '请输入123'}},
+    { type: 'input', item: { label: '动态input:', path: 'b1' }, content: {placeholder: '请输入123',comment:"使用动态标签label-width:不要尽量使用auto,不然label宽度会出现问题"}},
     { type: 'select', item: { label: '123显示下拉:', path: 'b2', isShow: !(queryFormData.value.b1=='123') }, content: { placeholder: '请选择选项2',options:defaultOptions }},
     { type: 'input', item: { label: 'abc:', path: 'b3',isShow: !(queryFormData.value.b2 == 2) }, content: {placeholder: '请输入456',}},
-    { type: 'date', item: { label: 'datetime日期加时间:', path: 'a7',isShow: !(queryFormData.value.b3 == '456' )}, content: {type:"datetime",placeholder: '请输入备注'}    },
+    { type: 'date', item: { label: 'datetime日期加时间:', path: 'a18',isShow: !(queryFormData.value.b3 == '456' )}, content: {type:"datetime",placeholder: '请输入备注'}    },
     // { label: 'auto输入框:', path: 'b4', type: 'auto', itemwidth: "100%", options: oo.value,isShow: queryFormData.value.b3 == '456' },
   ]
 })

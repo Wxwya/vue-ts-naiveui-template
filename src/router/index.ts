@@ -1,6 +1,6 @@
-import { createRouter,createWebHistory } from 'vue-router'
+import { createRouter,createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-//  ,createWebHashHistory
+// , createWebHistory
 import { deepClone } from '@/utils/handle'
 import layout from '@/layouts/index.vue'
 declare module 'vue-router' {
@@ -22,14 +22,14 @@ export let pageRoutes: RouteRecordRaw[] = [
       {
         path: '/form',
         name: 'form',
-        meta: {title:"表单示例"},
+        meta: { title: '表单示例' },
         icon: 'solar--document-text-bold',
         component: () => import('@/views/form/index.vue'),
       },
       {
         path: '/table',
         name: 'table',
-        meta: {title:"表格示例"},
+        meta: { title: '表格示例' },
         icon: 'solar--clapperboard-bold',
         component: () => import('@/views/table/index.vue'),
       },
@@ -94,8 +94,8 @@ export const staticRoutes: RouteRecordRaw[] = [
 
 const _createRouter = () =>
   createRouter({
-    history: createWebHistory(),
-    // history: createWebHashHistory(), //哈希模式
+    // history: createWebHistory(),
+    history: createWebHashHistory(), //哈希模式
     scrollBehavior: () => ({ top: 0 }),
     routes: [...noLoyoutRoutes],
   })

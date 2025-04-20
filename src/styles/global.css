@@ -14,9 +14,7 @@
   margin: 0;
   padding: 0;
 }
-body{
-  overflow: hidden;
-}
+
 /*  main 动画 */
 .fade-transform-leave-active,
 .fade-transform-enter-active {

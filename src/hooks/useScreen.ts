@@ -9,10 +9,13 @@ const useScreen = () => {
     const rect = body.getBoundingClientRect()
     return rect.width - 1 < WIDTH
   }
+  const setVh = () => { 
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+  }
   const resizeHandler = () => {
     if (!document.hidden) {
-      let vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
+      setVh()
       const is = isMobile()
       systemConfig.value.isPc = !is
       if (is) {
@@ -27,6 +30,7 @@ const useScreen = () => {
     window.removeEventListener('resize', resizeHandler)
   })
   onMounted(() => {
+    setVh()
     const is = isMobile()
     if (is) {
       systemConfig.value.isPc = !is

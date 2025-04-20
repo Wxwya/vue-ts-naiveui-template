@@ -24,7 +24,7 @@ const pagination = computed<PaginationProps>(() => ({
     page.pageNum = 1
     page.pageSize = pageSize
     getData()
-  }
+  },
 }))
 
 const initColumns = (): DataTableColumns<Log.LoggerInfo> => {
@@ -104,7 +104,7 @@ onMounted(() => {
 
 <template>
   <div class="h-full">
-    <XwyaTable class="h-full" flex-height :columns="initColumns()" :data="data" :pagination="pagination"
+    <XwyaTable class="h-full"  :scroll-y="true"   :columns="initColumns()" :data="data" :pagination="pagination"
       :loading="loading" />
   </div>
 </template>
