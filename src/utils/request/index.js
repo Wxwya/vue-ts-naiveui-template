@@ -42,7 +42,7 @@ const requestHooks = {
       newOptions.withCredentials && (newOptions.credentials = 'include')
     }
     if (options?.file) {
-      newOptions.headers['Content-Type'] = ContentTypeEnum.FORM_DATA
+      // newOptions.headers['Content-Type'] = ContentTypeEnum.FORM_DATA
       newOptions.data = options.file
       newOptions.body = options.file
     }

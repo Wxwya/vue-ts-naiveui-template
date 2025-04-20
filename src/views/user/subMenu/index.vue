@@ -122,8 +122,8 @@ const getData = async () => {
   loading.value = true
   const res = await api.menu.getMenuList(Object.assign(isSearch.value ? queryFormData.value : {}, page, {parent_id:parseInt(query.id)}))
   if (res.code === 200) { 
-    data.value = res.data!.list
-    total.value = res.data!.total
+    data.value = res.data.list
+    total.value = res.data.total
   }
   loading.value = false
 }
@@ -160,7 +160,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class=" flex-1" flex-height :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="h-full"  :scroll-y="true" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

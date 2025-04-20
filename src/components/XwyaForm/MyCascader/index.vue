@@ -1,7 +1,10 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem.path + formItem.isShow">
-    <n-cascader v-model:value="value[formItem.path]" expand-trigger="click" check-strategy="child" :show-path="true"
+  <n-form-item v-show="!formItem.isShow" v-bind="{ ...$attrs, ...formItem }" :key="formItem.path">
+    <div class="flex-1">
+      <n-cascader v-model:value="value[formItem.path]" expand-trigger="click" check-strategy="child" :show-path="true"
       :filterable="true" v-bind="content" />
+      <div v-if="content.comment" class=" text-zinc-400 mt-1">{{ content.comment }}</div>
+    </div>
   </n-form-item>
 </template>
 <script setup lang="ts">

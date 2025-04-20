@@ -38,3 +38,17 @@ export const sliceArray = (array, size) => {
   }
   return result
 }
+/**
+ * @author xwya
+ * @since 2024-12-14
+ * @description 生成随机id
+ * @param  { Number } - length[随机id的长度]
+ */
+export const generateRandomId = (length = 16) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}

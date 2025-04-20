@@ -5,7 +5,6 @@ import path from 'path'
 // import Components from 'unplugin-vue-components/vite'
 // import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import tailwindcss from '@tailwindcss/vite'
 import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 import { visualizer } from 'rollup-plugin-visualizer'
 // !如果使用Cdn打包的话 unplugin-auto-import 和 unplugin-vue-components  会失效需要 手动引入
@@ -26,7 +25,6 @@ const plugins = [
     // 指定symbolId格式
     symbolId: 'icon-[name]',
   }),
-  tailwindcss(),
   importToCDN({
     modules: [
       autoComplete('vue'),

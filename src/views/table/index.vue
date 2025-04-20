@@ -1,8 +1,10 @@
 <script  setup>
 import { usePage, computed, onMounted } from '@/rely/lib'
 import XwyaTable from '@/components/XwyaTable/index.vue'
-
+import useSystemConfigStore from '@/store/systemConfigStore'
+import { storeToRefs } from 'pinia'
 const { page, total, loading, data } = usePage()
+const { systemConfig } = storeToRefs(useSystemConfigStore())
 const arr = Array.from({ length: 46 }).map((_, index) => ({
   id: index + 1,
   name: `Edward King ${index}`,
@@ -18,7 +20,7 @@ const pagination = computed(() => ({
   pageSize: page.pageSize,
   showSizePicker: true,
   prefix: () => { 
-    return '共 ' + total.value + ' 条';
+    return systemConfig.value.isPc?'共 ' + total.value + ' 条':"";
   },
   page: page.pageNum,
   "onUpdate:page": (p) => {

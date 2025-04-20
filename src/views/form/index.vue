@@ -23,10 +23,21 @@
     </div>
     <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">动态表单示例</div>
     <div class="my-10 mx-2" >
-      <XwyaForm :rules="rules" label-width="auto" label-placement="left" :item-list="queryFormItem3"
-        v-model="queryFormData" :row="5">
+      <XwyaForm  row-flex :rules="rules" label-width="120px" label-placement="left" :item-list="queryFormItem3"
+        v-model="queryFormData" >
         <template #default="{ validate, reset }">
-          <div class="">
+          <div class="flex justify-center items-center gap-2 w-full">
+            <n-button type="primary" @click="submit(validate)"> 提交</n-button>
+            <n-button @click="onReset(reset)">重置</n-button>
+          </div>
+        </template>
+      </XwyaForm>
+    </div>
+    <div class="my-10 pb-10 mx-2" >
+      <XwyaForm  :rules="rules" label-width="100px" label-placement="left" :item-list="queryFormItem3"
+        v-model="queryFormData" :row="3" :col="2" >
+        <template #default="{ validate, reset }">
+          <div class="flex justify-center gap-2 items-center w-full">
             <n-button type="primary" @click="submit(validate)"> 提交</n-button>
             <n-button @click="onReset(reset)">重置</n-button>
           </div>
@@ -45,6 +56,10 @@ class QueryFormData {
   address = ""
   remarks221214222 = ""
   a1 = ""
+  b1 = ""
+  b2 = ""
+  b3 = ""
+  a18 = void 0
 }
 const queryFormData = ref(new QueryFormData())
 const defaultOptions= [{ label: "选项1", value: 1 }, { label: "选项2", value: 2 }]
@@ -94,8 +109,7 @@ const queryFormItem3 = computed(() => {
     { type: 'input', item: { label: '动态input:', path: 'b1' }, content: {placeholder: '请输入123'}},
     { type: 'select', item: { label: '123显示下拉:', path: 'b2', isShow: !(queryFormData.value.b1=='123') }, content: { placeholder: '请选择选项2',options:defaultOptions }},
     { type: 'input', item: { label: 'abc:', path: 'b3',isShow: !(queryFormData.value.b2 == 2) }, content: {placeholder: '请输入456',}},
-    { type: 'date', item: { label: 'datetime日期加时间:', path: 'a7',isShow: !(queryFormData.value.b3 == '456' )}, content: {type:"datetime",placeholder: '请输入备注'}    },
-    // { label: 'auto输入框:', path: 'b4', type: 'auto', itemwidth: "100%", options: oo.value,isShow: queryFormData.value.b3 == '456' },
+    { type: 'date', item: { label: 'datetime日期加时间:', path: 'a18',isShow: !(queryFormData.value.b3 == '456' )}, content: {type:"datetime",placeholder: '请输入备注'}    },
   ]
 })
 const submit = (validate) => {

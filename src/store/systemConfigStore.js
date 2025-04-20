@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { darkTheme } from 'naive-ui'
+import { darkTheme,lightTheme } from 'naive-ui'
 import { ref } from "vue"
 
 class SystemConfig { 
@@ -13,28 +13,34 @@ const useSystemConfigStore = defineStore('systemConfigStore', () => {
   const  changeLayout = () => {
     systemConfig.value.layout = systemConfig.value.layout=="level"? "vertical" : "level"
   }
-  const onLoadDarkTheme = () => {
-    systemConfig.value.theme =  darkTheme 
+  const onLoadTheme = () => { 
+    if (!systemConfig.value.theme || systemConfig.value.theme.name === 'light') {
+      systemConfig.value.theme = lightTheme
+    } else {
+      systemConfig.value.theme = darkTheme
+    }
   }
   const changeTheme = () => {
-    systemConfig.value.theme = systemConfig.value.theme?null: darkTheme 
+    if (systemConfig.value.theme && systemConfig.value.theme.name === 'dark') {
+      systemConfig.value.theme = lightTheme
+    } else {
+      systemConfig.value.theme = darkTheme
+    }
   }
 
   return {
     systemConfig,
     changeLayout,
     changeTheme,
-    onLoadDarkTheme
+    onLoadTheme
   }
 }, {
   persist: {
     key: 'system',
     storage: localStorage,
-    pick: ['systemConfig.layout', 'systemConfig.theme',"systemConfig.collapsed"],
-    afterHydrate: ({store}) => {
-      if (store.$state.systemConfig.theme) {
-        store.onLoadDarkTheme()
-      }
+    pick: ['systemConfig.layout', 'systemConfig.theme', "systemConfig.collapsed"],
+    afterHydrate: ({ store }) => {
+      store.onLoadTheme()
     }
   }
 })

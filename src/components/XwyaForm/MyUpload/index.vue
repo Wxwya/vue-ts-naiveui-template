@@ -1,7 +1,14 @@
 <template>
-  <n-form-item v-show="!formItem.isShow" :key="formItem.path+ formItem.isShow" v-bind="{ ...$attrs, ...formItem }">
-    <n-upload action="http://127.0.0.1:3800/upload" v-model:file-list="value[formItem.path]" list-type="image-card"
-      :custom-request="customRequest" v-bind="content" />
+  <n-form-item v-show="!formItem.isShow" :key="formItem.path" v-bind="{ ...$attrs, ...formItem }">
+    <div class="flex-1">
+      <n-upload
+        v-model:file-list="value[formItem.path]"
+        list-type="image-card"
+        :custom-request="customRequest"
+        v-bind="content"
+      />
+      <div v-if="content.comment" class="text-zinc-400 mt-1">{{ content.comment }}</div>
+    </div>
   </n-form-item>
 </template>
 <script setup>
@@ -33,7 +40,7 @@ const customRequest = async ({ file, data, onFinish, onError }) => {
   formData.append('file', file.file)
   const res = await uploadFile(formData)
   if (res.code == 200) {
-    file.url = res.data
+    file.url = res.data.url
     onFinish()
   } else {
     onError()

@@ -16,7 +16,7 @@
             <Down />
         </div>
       </n-layout-header>
-      <n-layout class="h-[calc(100vh-64px)]" :native-scrollbar="false" content-class="h-full p-4" >
+      <n-layout class="h-[calc(var(--vh,1vh)*100-64px)]" :native-scrollbar="false" content-class="h-full p-4" >
         <router-view #default="{ Component,route }">
             <transition appear name="fade-transform" mode="out-in">
             <!-- <keep-alive :exclude="['SubMenu','BuSiness','SubDict','ButtonPermissions']"> -->
