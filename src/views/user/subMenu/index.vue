@@ -127,7 +127,7 @@ const getData = async () => {
   }
   loading.value = false
 }
-const changeStatus = async (id:number, val:boolean) => {
+const changeStatus = async (id, val) => {
   const res = await api.menu.changeMenuStatus({ id, status: val })
   if (res.code === 200) { 
     getData()

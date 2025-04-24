@@ -90,12 +90,17 @@ const requestHooks = {
 }
 
 const handleParamsString = (params)=> {
-  return Object.keys(params).length > 0
-    ? '?' +
-        Object.keys(params)
-          .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-          .join('&')
-    : ''
+  const queryParts= [];
+  Object.entries(params).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        queryParts.push(`${key}=${encodeURIComponent(v)}`);
+      });
+    } else if (value) {
+      queryParts.push(`${key}=${encodeURIComponent(value)}`);
+    }
+  });
+  return queryParts.length > 0 ? '?' + queryParts.join('&') : '';
 }
 
 const defaultOptions = {
