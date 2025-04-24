@@ -89,7 +89,8 @@ const requestHooks = {
   },
 }
 
-const handleParamsString = (params)=> {
+const handleParamsString = (params) => {
+  console.log(params);
   const queryParts= [];
   Object.entries(params).forEach(([key, value]) => {
     if (Array.isArray(value)) {
