@@ -1,11 +1,11 @@
 {
   "name": "vue-js-naiveui-template",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node ./scripts/version-update.js && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -23,8 +23,10 @@ import { defineComponent, h } from 'vue'
 import { RouterView } from 'vue-router'
 import useScreen from "@/hooks/useScreen";
 import useNaive from '@/hooks/useNaive'
+import useUpdate from '@/hooks/useUpdate';
 const { systemConfig } = storeToRefs(useSystemConfigStore())
 useScreen()
+useUpdate()
 const LoadNaiveRouterView= defineComponent({
   setup() { 
     useNaive()
