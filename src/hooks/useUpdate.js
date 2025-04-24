@@ -4,7 +4,7 @@ import { onBeforeUnmount, onMounted } from "vue";
 let version = cache.getLocalStorage(VERSION);
 let timer = null;
 let isModal= false
-const TIME_DATE = 10000
+const TIME_DATE = 1000 * 60 * 30 
 const useUpdate = () => { 
   const getVersion = async () => {
     try { 
