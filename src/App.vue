@@ -18,7 +18,7 @@ import { NConfigProvider, NMessageProvider, NModalProvider, NDialogProvider, NNo
 import { zhCN, dateZhCN } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import useScreen from '@/hooks/useScreen'
-import useNaive from './hooks/useNaive'
+import useNaive from '@/hooks/useNaive'
 import useSystemConfigStore from '@/store/systemConfigStore'
 import { defineComponent, h } from 'vue'
 import { RouterView } from 'vue-router'
