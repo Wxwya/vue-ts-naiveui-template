@@ -18,12 +18,14 @@ import { NConfigProvider, NMessageProvider, NModalProvider, NDialogProvider, NNo
 import { zhCN, dateZhCN } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import useScreen from '@/hooks/useScreen'
+import useUpdate from '@/hooks/useUpdate'
 import useNaive from '@/hooks/useNaive'
 import useSystemConfigStore from '@/store/systemConfigStore'
 import { defineComponent, h } from 'vue'
 import { RouterView } from 'vue-router'
 const { systemConfig } = storeToRefs(useSystemConfigStore())
 useScreen()
+useUpdate()
 const LoadNaiveRouterView= defineComponent({
   setup() { 
     useNaive()

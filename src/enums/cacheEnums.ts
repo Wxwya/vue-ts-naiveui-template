@@ -13,3 +13,5 @@ export enum OptionsKeyEnums {
   SEX = "sex",
   YESNO = "yesno",
 }
+
+export const VERSION = "version"
