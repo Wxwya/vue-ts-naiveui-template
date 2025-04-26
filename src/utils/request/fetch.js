@@ -17,7 +17,7 @@ class FetchRequest {
       const response = await fetch(options.url, options)
       clearTimeout(timer)
       const data = await response.json()
-      return options.requestHooks.afterRequest(data, config,response)
+      return options.requestHooks.afterRequest(data, config, response)
     } catch (err) {
       window.$msg.error(err.message)
       console.error(err);

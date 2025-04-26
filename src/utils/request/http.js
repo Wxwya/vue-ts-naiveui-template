@@ -58,11 +58,12 @@ class HttpRequst {
       if (this.options.withToken && this.options.stateRefresh) {
         !config?.isAuth && this.addTask(options, config, resolve)
       }
-      const newOptions = await this.options.requestHooks.beforeRequest(options, config)
-      const req = await requestController[this.options.requestType].request(newOptions, config)
-      if (!this.isRefreshing || config?.isAuth) {
-        resolve(req)
-      }
+        const newOptions = await this.options.requestHooks.beforeRequest(options, config)
+        const req = await requestController[this.options.requestType].request(newOptions, config)
+        if (!this.isRefreshing || config?.isAuth) {
+          resolve(req)
+        }
+     
     })
   }
   addTask(options, config, resolve) {

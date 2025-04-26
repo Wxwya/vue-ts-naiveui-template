@@ -1,20 +1,20 @@
 import HttpRequst from './http'
-import { ContentTypeEnum,RequestCodeEnum,RequestMethodsEnum } from '@/enums/requestEnums'
+import { ContentTypeEnum, RequestCodeEnum, RequestMethodsEnum } from '@/enums/requestEnums'
 import cache from '@/utils/cache'
 import { TokenEnums } from '@/enums/cacheEnums'
 import requestCancel from './cancel'
 import lock from './lock'
 const requestHooks = {
-  async beforeRequest(options, config)  {
+  async beforeRequest(options, config) {
     let newOptions
-    if ( options?.startRetry) {
+    if (options?.startRetry) {
       options.retryCount
       options.controller = new AbortController()
       options.signal = options.controller.signal
       return options
     }
-    newOptions = {...this.options}
-    newOptions.url = `${this.options.baseURL}${this.options.prefix??''}${(options?.url??'')}`
+    newOptions = { ...this.options }
+    newOptions.url = `${this.options.baseURL}${this.options.prefix ?? ''}${(options?.url ?? '')}`
     newOptions.headers = { ...this.options.headers, ...options?.headers }
     newOptions.method = options?.method || RequestMethodsEnum.GET
     newOptions.params = options?.params || {}
@@ -24,16 +24,16 @@ const requestHooks = {
     newOptions.startRetry = false
     if (newOptions.withToken) {
       const token = cache.getLocalStorage(TokenEnums.TOKEN_KEY)
-      newOptions.headTokenKey &&(newOptions.headers[newOptions.headTokenKey] =  `${newOptions?.tokenPrefix??""}${token}`)  
+      newOptions.headTokenKey && (newOptions.headers[newOptions.headTokenKey] = `${newOptions?.tokenPrefix ?? ""}${token}`)
       if (newOptions.stateRefresh) {
         const refreshToken = cache.getLocalStorage(TokenEnums.REFRESH_KEY)
-        newOptions.refreshTokenKey &&(newOptions.headers[newOptions.refreshTokenKey] =  `${newOptions?.tokenPrefix??""}${refreshToken}`)   
+        newOptions.refreshTokenKey && (newOptions.headers[newOptions.refreshTokenKey] = `${newOptions?.tokenPrefix ?? ""}${refreshToken}`)
       }
     }
     if (newOptions.repeatRequest) {
       requestCancel.add(options.url, newOptions.controller)
     }
-    if ((newOptions.isLockRequest || config?.lockRequest) && !config?.excludeLock &&options.data && !!Object.keys(options.data).length ) {
+    if ((newOptions.isLockRequest || config?.lockRequest) && !config?.excludeLock && options.data && !!Object.keys(options.data).length) {
       newOptions.data = await lock.encryptionRequestBody(options.data)
     }
     if (newOptions.requestType == 'fetch') {
@@ -53,39 +53,36 @@ const requestHooks = {
       data = await lock.decryptResponseBody(data) ?? {}
     }
     if (response && (response.status != RequestCodeEnum.SUCCESS)) {
-      window.$msg.error(data? `${data.code}:${JSON.stringify(data.msg)}` : `${response.status}:${response.statusText}`)
-      return {code:data?data.code:response.status,msg:data?data.msg:response.statusText,data:null}
+      window.$msg.error(data ? `${data.code}:${JSON.stringify(data.msg)}` : `${response.status}:${response.statusText}`)
+      return { code: data ? data.code : response.status, msg: data ? data.msg : response.statusText, data: null }
     }
-    if (data) { 
+    if (data) {
       if (data.code === RequestCodeEnum.SUCCESS) {
         config?.show && window.$msg.success(config.message || data.msg || 'ok')
       } else if (RequestCodeEnum.TOKEN_INVALID.includes(data.code)) {
-        if (!this.options.stateRefresh || (this.options.stateRefresh && config?.isAuth) || !this.options.withToken || data.code===RequestCodeEnum.ENDED_LOGIN) {
-          cache.remove(TokenEnums.TOKEN_KEY)
-          cache.remove(TokenEnums.REFRESH_KEY)
-          this.options.stateRefresh && this.clearTasks()
-          window.$msg.error(data.msg ||'暂无权限..')
-          location.reload()
-          return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
-        }
-        if (!this.isRefreshing&&this.options.stateRefresh && this.options.withToken&& !config?.isAuth) {
-          this.isRefreshing = true        
-          const res = await this.get({ url: this.options?.refreshApi??'' }, {show:false,isAuth: true })
+        if (!this.isRefreshing && this.options.stateRefresh && this.options.withToken && !config?.isAuth && data.code === RequestCodeEnum.TOKEN_TIMEOUT) {
+          this.isRefreshing = true
+          const res = await this.get({ url: this.options?.refreshApi ?? '' }, { show: false, isAuth: true })
           if (res?.code == RequestCodeEnum.SUCCESS) {
             cache.setLocalStorage(TokenEnums.TOKEN_KEY, res.access_token)
             cache.setLocalStorage(TokenEnums.REFRESH_KEY, res.refresh_token)
             !this.isStartTask && this.startTaskRequest()
           }
+          return { code: data.code, msg: data.msg, data: null }
         }
-       
-        return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+        if (!this.isRefreshing || config?.isAuth) {
+          cache.remove(TokenEnums.TOKEN_KEY)
+          cache.remove(TokenEnums.REFRESH_KEY)
+          location.reload()
+        }
+        return { code: data.code, msg: data.msg, data: 1 }
       } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
         window.$msg.error('请稍后重试....')
       } else {
         window.$msg.error(data.msg || '请求错误')
       }
     }
-    if (!config?.isAuth&& this.options.stateRefresh) { 
+    if (!config?.isAuth && this.options.stateRefresh) {
       this.removeTask()
     }
     return data
@@ -93,8 +90,7 @@ const requestHooks = {
 }
 
 const handleParamsString = (params) => {
-  console.log(params);
-  const queryParts= [];
+  const queryParts = [];
   Object.entries(params).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((v) => {
@@ -108,15 +104,15 @@ const handleParamsString = (params) => {
 }
 
 const defaultOptions = {
-  baseURL: import.meta.env.VITE_APP_URL  || "",
-  prefix: import.meta.env.VITE_APP_PREFIX  || "",
+  baseURL: import.meta.env.VITE_APP_URL || "",
+  prefix: import.meta.env.VITE_APP_PREFIX || "",
   headers: {
     'Content-Type': ContentTypeEnum.JSON,
   },
-  withCredentials:true, // 是否开启cookie
-  withToken: false, // 是否携带token
+  withCredentials: false, // 是否开启cookie
+  withToken: true, // 是否携带token
   requestHooks: requestHooks, // 请求拦截器
-  requestType: 'axios', // 配置 axios 或 fetch
+  requestType: 'fetch', // 配置 axios 或 fetch
   retryCount: 2, // 重试次数
   retryTimeout: 5000, // 重试机制时间
   tokenPrefix: 'Bearer ', // token前缀
