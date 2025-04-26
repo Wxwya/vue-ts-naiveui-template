@@ -19,5 +19,7 @@ export const RequestCodeEnum={
   SUCCESS: 200,
   FAILED:400, 
   TOKEN_INVALID:[1001, 1002, 1003,1004,1005,401],
-  ServerError:500, 
+  SERVER_ERROR: 500, 
+  ENDED_LOGIN: 1005,
+  NO_PERMISSION:401
 }

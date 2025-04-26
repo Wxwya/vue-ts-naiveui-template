@@ -64,7 +64,15 @@ const requestHooks: RequestHooks = {
       if (data.code === RequestCodeEnum.SUCCESS) {
         config?.show && window.$msg.success(config.message || data.msg || 'ok')
       } else if (RequestCodeEnum.TOKEN_INVALID.includes(data.code)) {
-        if (!that.isRefreshing&&that.options.stateRefresh && that.options.withToken&& !config?.isAuth) {
+        if (!that.options.stateRefresh || (that.options.stateRefresh && config?.isAuth) || !that.options.withToken || data.code===RequestCodeEnum.ENDED_LOGIN) {
+          cache.remove(TokenEnums.TOKEN_KEY)
+          cache.remove(TokenEnums.REFRESH_KEY)
+          that.options.stateRefresh && that.clearTasks()
+          window.$msg.error(data.msg || '暂无权限..')
+          location.reload()
+          return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+        }
+        if (!that.isRefreshing && that.options.stateRefresh && that.options.withToken && !config?.isAuth) {
           that.isRefreshing = true        
           const res = await that.get<any>({ url: that.options?.refreshApi??'' }, {show:false,isAuth: true }) as any
           if (res?.code == RequestCodeEnum.SUCCESS) {
@@ -73,14 +81,8 @@ const requestHooks: RequestHooks = {
             !that.isStartTask && that.startTaskRequest()
           }
         }
-        if (!that.options.stateRefresh || (that.options.stateRefresh && config?.isAuth) || !that.options.withToken) {
-          cache.remove(TokenEnums.TOKEN_KEY)
-          cache.remove(TokenEnums.REFRESH_KEY)
-          that.options.stateRefresh && that.clearTasks()
-          location.reload()
-        }
-        return {code:data.code,msg:data.msg,data:null}
-      } else if (data.code === RequestCodeEnum.ServerError) {
+        return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+      } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
         window.$msg.error('请稍后重试....')
       } else {
         window.$msg.error(data.msg || '请求错误')
@@ -114,8 +116,8 @@ const defaultOptions: RequestDefaultOptions = {
   headers: {
     'Content-Type': ContentTypeEnum.JSON,
   },
-  withCredentials:false, // 是否开启cookie
-  withToken: true, // 是否携带token
+  withCredentials:true, // 是否开启cookie
+  withToken: false, // 是否携带token
   requestHooks: requestHooks, // 请求拦截器
   requestType: 'fetch', // 配置 axios 或 fetch
   retryCount: 2, // 重试次数
