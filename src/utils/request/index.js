@@ -60,6 +60,14 @@ const requestHooks = {
       if (data.code === RequestCodeEnum.SUCCESS) {
         config?.show && window.$msg.success(config.message || data.msg || 'ok')
       } else if (RequestCodeEnum.TOKEN_INVALID.includes(data.code)) {
+        if (!this.options.stateRefresh || (this.options.stateRefresh && config?.isAuth) || !this.options.withToken || data.code===RequestCodeEnum.ENDED_LOGIN) {
+          cache.remove(TokenEnums.TOKEN_KEY)
+          cache.remove(TokenEnums.REFRESH_KEY)
+          this.options.stateRefresh && this.clearTasks()
+          window.$msg.error(data.msg ||'暂无权限..')
+          location.reload()
+          return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+        }
         if (!this.isRefreshing&&this.options.stateRefresh && this.options.withToken&& !config?.isAuth) {
           this.isRefreshing = true        
           const res = await this.get({ url: this.options?.refreshApi??'' }, {show:false,isAuth: true })
@@ -69,14 +77,9 @@ const requestHooks = {
             !this.isStartTask && this.startTaskRequest()
           }
         }
-        if (!this.options.stateRefresh || (this.options.stateRefresh && config?.isAuth) || !this.options.withToken) {
-          cache.remove(TokenEnums.TOKEN_KEY)
-          cache.remove(TokenEnums.REFRESH_KEY)
-          this.options.stateRefresh && this.clearTasks()
-          location.reload()
-        }
-        return {code:data.code,msg:data.msg,data:null}
-      } else if (data.code === RequestCodeEnum.ServerError) {
+       
+        return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+      } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
         window.$msg.error('请稍后重试....')
       } else {
         window.$msg.error(data.msg || '请求错误')
@@ -110,8 +113,8 @@ const defaultOptions = {
   headers: {
     'Content-Type': ContentTypeEnum.JSON,
   },
-  withCredentials:false, // 是否开启cookie
-  withToken: true, // 是否携带token
+  withCredentials:true, // 是否开启cookie
+  withToken: false, // 是否携带token
   requestHooks: requestHooks, // 请求拦截器
   requestType: 'axios', // 配置 axios 或 fetch
   retryCount: 2, // 重试次数
