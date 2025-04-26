@@ -64,15 +64,7 @@ const requestHooks: RequestHooks = {
       if (data.code === RequestCodeEnum.SUCCESS) {
         config?.show && window.$msg.success(config.message || data.msg || 'ok')
       } else if (RequestCodeEnum.TOKEN_INVALID.includes(data.code)) {
-        if (!that.options.stateRefresh || (that.options.stateRefresh && config?.isAuth) || !that.options.withToken || data.code===RequestCodeEnum.ENDED_LOGIN) {
-          cache.remove(TokenEnums.TOKEN_KEY)
-          cache.remove(TokenEnums.REFRESH_KEY)
-          that.options.stateRefresh && that.clearTasks()
-          window.$msg.error(data.msg || '暂无权限..')
-          location.reload()
-          return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
-        }
-        if (!that.isRefreshing && that.options.stateRefresh && that.options.withToken && !config?.isAuth) {
+        if (!that.isRefreshing && that.options.stateRefresh && that.options.withToken && !config?.isAuth && data.code===RequestCodeEnum.TOKEN_TIMEOUT) {
           that.isRefreshing = true        
           const res = await that.get<any>({ url: that.options?.refreshApi??'' }, {show:false,isAuth: true }) as any
           if (res?.code == RequestCodeEnum.SUCCESS) {
@@ -80,8 +72,15 @@ const requestHooks: RequestHooks = {
             cache.setLocalStorage(TokenEnums.REFRESH_KEY, res.refresh_token)
             !that.isStartTask && that.startTaskRequest()
           }
+          return {code:data.code,msg:data.msg,data:null}
         }
-        return {code:RequestCodeEnum.NO_PERMISSION,msg:data.msg,data:null}
+        if (!that.isRefreshing || config?.isAuth ) {
+          cache.remove(TokenEnums.TOKEN_KEY)
+          cache.remove(TokenEnums.REFRESH_KEY)
+          window.$msg.error(data.msg || '暂无权限..')
+          location.reload()
+        }
+        return { code: data.code, msg: data.msg, data: null }
       } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
         window.$msg.error('请稍后重试....')
       } else {
@@ -116,8 +115,8 @@ const defaultOptions: RequestDefaultOptions = {
   headers: {
     'Content-Type': ContentTypeEnum.JSON,
   },
-  withCredentials:true, // 是否开启cookie
-  withToken: false, // 是否携带token
+  withCredentials:false, // 是否开启cookie
+  withToken: true, // 是否携带token
   requestHooks: requestHooks, // 请求拦截器
   requestType: 'fetch', // 配置 axios 或 fetch
   retryCount: 2, // 重试次数
