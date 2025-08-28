@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import { defineProps, } from 'vue'
 import { NDataTable } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { PaginationProps, DataTableColumns, DataTableRowKey, DataTableRowData } from 'naive-ui'

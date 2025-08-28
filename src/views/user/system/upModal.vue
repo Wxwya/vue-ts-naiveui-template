@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref,computed,defineProps } from "vue"
+import { ref,computed } from "vue"
 import type {PropType} from "vue"
 import { generateUser } from "@/api/user"
 import type { FormRules } from "naive-ui"

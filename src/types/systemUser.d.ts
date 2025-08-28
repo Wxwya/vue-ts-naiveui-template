@@ -10,6 +10,7 @@ declare namespace SystemUser {
     hidden: boolean;
     status: boolean;
     create_time: string;
+    alwaysShow: boolean;
     children?: Route[];
   }
   interface UserInfo {

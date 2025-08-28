@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps,ref, computed } from "vue"
+import { ref, computed } from "vue"
 import { generateMenu } from '@/api/menu';
 import { XwyaForm, XwyaButton } from "@/rely/page"
 import type {PropType} from "vue"

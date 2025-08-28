@@ -8,7 +8,6 @@
   </n-form-item>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import {NFormItem, NCascader} from 'naive-ui'
 import type {PropType} from "vue"
 defineProps({

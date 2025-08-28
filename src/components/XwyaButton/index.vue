@@ -12,7 +12,6 @@
   </n-button>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import { NButton, NIcon } from 'naive-ui'
 import XwyaIcon from '@/components/XwyaIcon/index.vue'
 defineProps({

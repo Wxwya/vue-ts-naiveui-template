@@ -15,7 +15,6 @@
   </n-form-item>
 </template>
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import { NFormItem, NDatePicker } from 'naive-ui'
 import type { PropType } from 'vue'
 defineProps({

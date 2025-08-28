@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps,ref, computed } from "vue"
+import { ref, computed } from "vue"
 import {XwyaForm,XwyaButton } from "@/rely/page"
 import { generatePermissions } from '@/api/permissions'; 
 import type {PropType} from "vue"

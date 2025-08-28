@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import { NFormItem, NUpload } from 'naive-ui'
 import { uploadFile } from '@/api/system'
 import type { UploadCustomRequestOptions } from 'naive-ui'

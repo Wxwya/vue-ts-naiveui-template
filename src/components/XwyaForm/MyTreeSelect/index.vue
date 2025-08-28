@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import { NFormItem, NTreeSelect } from "naive-ui";
 import type {PropType} from "vue"
 defineProps({

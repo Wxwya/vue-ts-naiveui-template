@@ -51,7 +51,7 @@
   </n-form>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, computed, defineExpose } from 'vue'
+import { ref, computed } from 'vue'
 import type { PropType } from 'vue'
 import { NForm, NFlex } from 'naive-ui'
 import type { FormInst } from 'naive-ui'

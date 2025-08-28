@@ -78,7 +78,7 @@ const requestHooks: RequestHooks = {
           cache.remove(TokenEnums.TOKEN_KEY)
           cache.remove(TokenEnums.REFRESH_KEY)
           window.$msg.error(data.msg || '暂无权限..')
-          location.reload()
+          // location.reload()
         }
         return { code: data.code, msg: data.msg, data: null }
       } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
@@ -124,7 +124,7 @@ const defaultOptions: RequestDefaultOptions = {
   tokenPrefix: 'Bearer ', // token前缀
   headTokenKey: 'Authorization', // 携带头部Token key名称
   refreshTokenKey: 'Refresh-Token',
-  refreshApi: '/system/refresh', // 刷新token接口
+  refreshApi: '/system/admin/refresh', // 刷新token接口
   stateRefresh: true, // 是否双token
   timeout: 5000, // 超时机制
   isRetry: true, // 是否开启重试

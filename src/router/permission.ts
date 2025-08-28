@@ -20,8 +20,6 @@ router.beforeEach(async (to: any, _, next: any) => {
       }
     }
   } else { 
-    console.log("进来了","toke",token);
-    
     if (to.path === '/login') {
       next()
     } else { 

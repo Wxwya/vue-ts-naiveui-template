@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import  {NTabs,NTab,NTabPane } from "naive-ui";
-import { defineComponent, defineProps } from 'vue';
+import { defineComponent } from 'vue';
 import type { VNode,PropType } from 'vue';
 export type NTabPaneProps = {
   closable?: boolean; // 是否允许关闭标签（仅在父组件的 type="card" 时生效）

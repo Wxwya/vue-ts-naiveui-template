@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { ref,  onMounted, nextTick, onBeforeUnmount } from 'vue'
 const props = defineProps({
   isVisualizing:{
     type: Boolean,
