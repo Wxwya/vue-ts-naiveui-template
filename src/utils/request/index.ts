@@ -78,7 +78,7 @@ const requestHooks: RequestHooks = {
           cache.remove(TokenEnums.TOKEN_KEY)
           cache.remove(TokenEnums.REFRESH_KEY)
           window.$msg.error(data.msg || '暂无权限..')
-          // location.reload()
+          location.reload()
         }
         return { code: data.code, msg: data.msg, data: null }
       } else if (data.code === RequestCodeEnum.SERVER_ERROR) {
