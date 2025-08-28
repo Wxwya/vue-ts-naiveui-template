@@ -118,7 +118,7 @@ const defaultOptions = {
   tokenPrefix: 'Bearer ', // token前缀
   headTokenKey: 'Authorization', // 携带头部Token key名称
   refreshTokenKey: 'Refresh-Token',
-  refreshApi: '/system/refresh', // 刷新token接口
+  refreshApi: '/system/admin/refresh', // 刷新token接口
   stateRefresh: true, // 是否双token
   timeout: 5000, // 超时机制
   isRetry: true, // 是否开启重试
