@@ -1,5 +1,5 @@
 <script  setup>
-import {defineProps,ref, computed,OptionsKeyEnums,useUserStore } from "@/rely/lib"
+import {ref, computed,OptionsKeyEnums,useUserStore } from "@/rely/lib"
 import { generateDictType } from '@/api/dict';
 import {XwyaForm,XwyaButton} from "@/rely/page"
 

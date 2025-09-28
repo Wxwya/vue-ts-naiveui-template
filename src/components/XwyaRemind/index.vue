@@ -18,7 +18,6 @@
 </template>
 
 <script setup >
-import { defineProps } from 'vue'
 import { NPopconfirm, NTooltip, NIcon } from 'naive-ui'
 import { XwyaIcon } from '@/rely/page'
 defineProps({

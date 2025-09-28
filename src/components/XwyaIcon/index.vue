@@ -1,5 +1,5 @@
 <script  setup>
-import { defineProps,computed } from 'vue'
+import { computed } from 'vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import { isIconType } from '@/utils/setIconfont';
 const props =  defineProps({

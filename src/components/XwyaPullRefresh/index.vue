@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, reactive,defineProps,onMounted, onBeforeUnmount} from 'vue'
+import { ref, reactive,onMounted, onBeforeUnmount} from 'vue'
 //  下拉刷新的几种状态
 const DEFAULT_HEAD_HEIGHT = 50;
 const stateStore = [" ", "下拉即可刷新", "释放即可刷新", "重新加载中..."]

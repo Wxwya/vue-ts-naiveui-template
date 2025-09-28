@@ -1,5 +1,4 @@
 <script setup>
-import { defineProps } from 'vue'
 import { XwyaRemind,XwyaPopover,XwyaButton } from '@/rely/page'
 const props = defineProps({
   delData: {

@@ -9,7 +9,6 @@
   </n-form-item>
 </template>
 <script setup >
-import { defineProps } from 'vue'
 import {NFormItem, NRadioGroup, NRadio} from 'naive-ui'
 defineProps({
   value:{

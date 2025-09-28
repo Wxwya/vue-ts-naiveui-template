@@ -12,7 +12,7 @@
 
 <script setup>
 import  {NTabs,NTab,NTabPane } from "naive-ui";
-import { defineComponent, defineProps } from 'vue';
+import { defineComponent} from 'vue';
 
  defineProps({
   pane: {

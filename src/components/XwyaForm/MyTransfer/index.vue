@@ -7,7 +7,6 @@
   </n-form-item>
 </template>
 <script setup >
-import { defineProps } from 'vue'
 import { NFormItem, NTransfer } from 'naive-ui'
 defineProps({
   value:{

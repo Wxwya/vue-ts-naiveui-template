@@ -6,7 +6,7 @@
 </template>
 
 <script setup  name="SvgIcon">
-import { defineProps, computed} from 'vue'
+import {  computed} from 'vue'
 import { isExternal } from "@/utils/vaildate";
 const props = defineProps({
   name: {

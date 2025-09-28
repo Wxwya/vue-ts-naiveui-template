@@ -23,7 +23,6 @@
 </template>
 
 <script setup >
-import { defineProps } from 'vue'
 import { NDataTable } from 'naive-ui'
 defineProps({
   columns: {

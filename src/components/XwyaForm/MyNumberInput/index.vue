@@ -8,7 +8,6 @@
 </template>
 
 <script setup >
-import { defineProps } from 'vue'
 import {NFormItem, NInputNumber} from 'naive-ui'
 defineProps({
   value:{

@@ -51,7 +51,7 @@
   </n-form>
 </template>
 <script  setup>
-import { defineProps, ref, computed, defineExpose } from 'vue'
+import {  ref, computed, defineExpose } from 'vue'
 import { NForm, NFlex } from 'naive-ui'
 import MyInput from './MyInput/index.vue'
 import MyCheck from './MyCheck/index.vue'

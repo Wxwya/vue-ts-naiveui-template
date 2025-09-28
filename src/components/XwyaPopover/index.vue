@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
 import { NTooltip } from 'naive-ui'
 defineProps({
   text: {

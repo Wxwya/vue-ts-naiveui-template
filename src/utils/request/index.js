@@ -110,8 +110,8 @@ const defaultOptions = {
   headers: {
     'Content-Type': ContentTypeEnum.JSON,
   },
-  withCredentials: false, // 是否开启cookie
-  withToken: true, // 是否携带token
+  withCredentials: true, // 是否开启cookie
+  withToken: false, // 是否携带token
   requestHooks: requestHooks, // 请求拦截器
   requestType: 'fetch', // 配置 axios 或 fetch
   retryCount: 2, // 重试次数
@@ -120,7 +120,7 @@ const defaultOptions = {
   headTokenKey: 'Authorization', // 携带头部Token key名称
   refreshTokenKey: 'Refresh-Token',
   refreshApi: '/system/admin/refresh', // 刷新token接口
-  stateRefresh: true, // 是否双token
+  stateRefresh: false, // 是否双token
   timeout: 5000, // 超时机制
   isRetry: true, // 是否开启重试
   repeatRequest: true, // 重复请求机制

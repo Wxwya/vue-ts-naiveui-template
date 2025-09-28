@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
 const props = defineProps({
   isVisualizing:{
     type: Boolean,
@@ -15,9 +15,9 @@ const props = defineProps({
   }
 })
 
-let animationFrameId: = null
+let animationFrameId= null
 const cav = ref(null)
-const draw = (ctx:, bufferLength, dataArray) => {
+const draw = (ctx, bufferLength, dataArray) => {
   if (!props.isVisualizing) return; // 检查标志
   props.analyser.getByteFrequencyData(dataArray);
   animationFrameId = requestAnimationFrame(() => { draw(ctx, bufferLength, dataArray) });
@@ -34,7 +34,7 @@ const draw = (ctx:, bufferLength, dataArray) => {
 };
 const start = () => {
   try {
-    const ctx = cav.value!.getContext('2d');
+    const ctx = cav.value.getContext('2d');
     const bufferLength = props.analyser.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength);
     draw(ctx, bufferLength, dataArray);

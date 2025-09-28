@@ -1,5 +1,5 @@
 
-export { ref, reactive, computed, watch, defineProps, defineExpose,inject,onMounted,onBeforeUnmount,h } from 'vue'
+export { ref, reactive, computed, watch,inject,onMounted,onBeforeUnmount,h } from 'vue'
 export { useRouter, useRoute } from 'vue-router'
 export { default as useSystemConfigStore } from '@/store/systemConfigStore'
 export { default as useUserStore } from '@/store/userStore'

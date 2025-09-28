@@ -12,7 +12,6 @@
   </n-form-item>
 </template>
 <script setup>
-import { defineProps } from 'vue'
 import { NFormItem, NUpload } from "naive-ui";
 import { uploadFile } from "@/api/system"
 
