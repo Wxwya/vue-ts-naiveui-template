@@ -8,7 +8,7 @@ const requestHooks = {
   async beforeRequest(options, config) {
     let newOptions
     if (options?.startRetry) {
-      options.retryCount
+      --options.retryCount
       options.controller = new AbortController()
       options.signal = options.controller.signal
       return options

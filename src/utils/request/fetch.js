@@ -12,6 +12,7 @@ class FetchRequest {
     const timer = setTimeout(() => {
       options.isTimeout = true
       options.controller.abort()
+      
     }, options.timeout)
     try {
       const response = await fetch(options.url, options)
@@ -21,6 +22,7 @@ class FetchRequest {
     } catch (err) {
       window.$msg.error(err.message)
       console.error(err);
+      
       if ((options.isRetry &&!!options.retryCount && options.retryCount <= 0) || !options.isRetry) {
         return {code: 0, data: null, msg: err.message || '发送请求错误'} 
       }

@@ -59,15 +59,14 @@ const mainStyle = computed(() => ({
 }))
 const login = async () => {
   const m = window.$msg.loading('登录中...', { duration: 0 })
-  console.log(api);
   
   const res = await api.system.login(info)
   if (res?.code === 200) {
     // 单token
-    // cache.setLocalStorage(TokenEnums.TOKEN_KEY,res.token)
+    cache.setLocalStorage(TokenEnums.TOKEN_KEY,res.token)
     // 双token
-    cache.setLocalStorage(TokenEnums.TOKEN_KEY, res.access_token)
-    cache.setLocalStorage(TokenEnums.REFRESH_KEY, res.refresh_token)
+    // cache.setLocalStorage(TokenEnums.TOKEN_KEY, res.access_token)
+    // cache.setLocalStorage(TokenEnums.REFRESH_KEY, res.refresh_token)
     push({ path: query.redirect ? query.redirect : '/' })
   }
   m.destroy()
