@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 // solar--users-group-two-rounded-bold 显示动态图标
 </script>
 
