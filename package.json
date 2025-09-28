@@ -1,0 +1,37 @@
+{
+  "name": "vue-js-naiveui-template",
+  "private": true,
+  "version": "0.0.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node ./scripts/version-update.js",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "echarts": "^5.6.0",
+    "js-cookie": "^3.0.5",
+    "mitt": "^3.0.1",
+    "naive-ui": "^2.41.0",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@iconify-json/solar": "^1.2.2",
+    "@iconify/tailwind": "^1.2.0",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "rollup-plugin-visualizer": "^5.14.0",
+    "tailwindcss": "3",
+    "unplugin-auto-import": "^19.1.2",
+    "unplugin-vue-components": "^28.5.0",
+    "vconsole": "^3.15.1",
+    "vite": "^6.2.0",
+    "vite-plugin-cdn-import": "^1.0.1",
+    "vite-plugin-svg-icons": "^2.0.1"
+  }
+}

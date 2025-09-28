@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"] // 设置路径别名
+    },
+
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.vue"]
+}
