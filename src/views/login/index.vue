@@ -59,6 +59,8 @@ const mainStyle = computed(() => ({
 }))
 const login = async () => {
   const m = window.$msg.loading('登录中...', { duration: 0 })
+  console.log(api);
+  
   const res = await api.system.login(info)
   if (res?.code === 200) {
     // 单token
