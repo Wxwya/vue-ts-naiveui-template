@@ -44,6 +44,7 @@ const requestHooks = {
     }
     if (options?.file) {
       // newOptions.headers['Content-Type'] = ContentTypeEnum.FORM_DATA
+       delete newOptions.headers['Content-Type']
       newOptions.data = options.file
       newOptions.body = options.file
     }
@@ -119,7 +120,7 @@ const defaultOptions = {
   tokenPrefix: 'Bearer ', // token前缀
   headTokenKey: 'Authorization', // 携带头部Token key名称
   refreshTokenKey: 'Refresh-Token',
-  refreshApi: '/system/admin/refresh', // 刷新token接口
+  refreshApi: '/admin/refresh', // 刷新token接口
   stateRefresh: false, // 是否双token
   timeout: 5000, // 超时机制
   isRetry: true, // 是否开启重试
