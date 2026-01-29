@@ -1,0 +1,32 @@
+/* @config "../../tailwind.config.js"; */
+/* @import "tailwindcss/theme.css"; */
+/* @import "tailwindcss/preflight.css"; 
+@import "tailwindcss/utilities.css"; */
+@import "./tailwind.css";
+@import "./theme.css";
+@import "./naive.css";
+
+:root {
+  --vh: 1vh;
+}
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*  main 动画 */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all .5s;
+}
+
+.fade-transform-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}

@@ -1,0 +1,39 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // 设置 TypeScript 编译信息文件路径
+    "target": "ES2020", // 设置 TypeScript 编译目标版本
+    "useDefineForClassFields": true, // 是否使用 defineProperty 定义类字段
+    "module": "ESNext", // 设置 TypeScript 模块系统
+    "lib": ["ES2020", "DOM", "DOM.Iterable","scripthost"], // 设置 TypeScript 库
+    "esModuleInterop": true, // 是否启用 ES 模块互操作性
+    "experimentalDecorators": true, // 允许使用实验性的装饰器特性
+    "emitDecoratorMetadata": true, // 为装饰器生成元数据
+    "allowSyntheticDefaultImports":true, // 允许从没有默认导出的模块中默认导入
+    "composite": true, // 是否启用复合项目
+    "isolatedModules": true, // 是否将每个文件作为单独的模块处理
+    "noEmit": true, // 是否禁止生成输出文件
+    "allowImportingTsExtensions": true, // 是否允许导入 TypeScript 文件扩展名
+    "resolveJsonModule": true, // 是否允许导入 JSON 模块
+    "skipLibCheck": true, // 是否跳过库文件的类型检查
+    "jsx": "preserve", // 是否将 JSX 编译为 React 代码
+    "removeComments": true, // 是否移除 TypeScript 代码中的注释
+    "noEmitHelpers": true, // 是否禁止生成 TypeScript 帮助函数
+    "downlevelIteration": true, // 是否将 for...of 循环编译为适用于旧版 JavaScript 的代码
+    "importHelpers": true, // 是否使用模块化方式引入帮助函数
+    /* Path aliases */
+    "baseUrl": ".", // 设置基础路径
+    "paths": {
+      "@/*": ["src/*"] // 设置路径别名
+    },
+    "types": ["naive-ui/volar","vite/client"], // 设置 TypeScript 类型声明文件
+    /* Linting */
+    "strict": true, // 是否严格模式
+    "noImplicitAny": false, // 是否允许隐式 any 类型
+    "noUnusedLocals": true, // 是否允许未使用的局部变量
+    "noUnusedParameters": true, // 是否允许未使用的参数
+    "noFallthroughCasesInSwitch": true, // 是否允许 switch 语句中的 fallthrough
+    "noUncheckedSideEffectImports": true // 是否允许未检查的副作用导入
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+}
