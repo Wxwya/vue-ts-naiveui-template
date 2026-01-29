@@ -65,7 +65,7 @@ const initColumns = () => {
       title: "操作",
       key: "actions",
       render(row) {
-        return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.permission_id), toSub: () => push(`/user/buttonPermissions?id=${row.permission_id}&prefix=${row.permission_name}`) })
+        return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.id), toSub: () => push(`/user/buttonPermissions?id=${row.id}&prefix=${row.permission_name}`) })
       }
     }
 
@@ -146,7 +146,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r) => r.permission_id" :columns="initColumns()" :data="data" :onSelect="onSelect"
+    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r) => r.id" :columns="initColumns()" :data="data" :onSelect="onSelect"
       :pagination="pagination" :loading="loading" />
   </div>
 </template>

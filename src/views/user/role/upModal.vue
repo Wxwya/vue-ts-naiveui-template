@@ -49,7 +49,7 @@ const submit = async (validate) => {
   })
 }
 const onLoadRoleInfo = async () => { 
-  const res = await getRoleInfo(props.row.role_id)
+  const res = await getRoleInfo(props.row.id)
   if (res.code === 200) { 
     formData.value = res.data
   }
@@ -68,7 +68,7 @@ const onLoadPermissionsOptions = async () => {
     }
 }
 onMounted(() => {
-  props.row.role_id&& onLoadRoleInfo()
+  props.row.id&& onLoadRoleInfo()
   onLoadMenuOptions()
   onLoadPermissionsOptions()
 })

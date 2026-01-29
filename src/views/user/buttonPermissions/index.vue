@@ -60,7 +60,7 @@ const initColumns = () => {
       title: "操作",
       key: "actions",
       render(row) {
-        return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.permission_id) })
+        return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.id) })
       }
     }
 
@@ -139,7 +139,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r)=>r.permission_id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r)=>r.id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

@@ -111,7 +111,7 @@ const initColumns = () => {
       title: "操作",
       key: "actions",
       render(row) {
-        return h(Acruibs, {upData:()=>onOpenModal("修改角色",row),delData:()=>onDelete(row.role_id) })
+        return h(Acruibs, {upData:()=>onOpenModal("修改角色",row),delData:()=>onDelete(row.id) })
       }
     }
 
@@ -143,7 +143,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r)=>r.role_id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="h-full"  :scroll-y="true" :row-key="(r)=>r.id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

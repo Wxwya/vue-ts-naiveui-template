@@ -64,7 +64,7 @@ const getData = async () => {
   loading.value = true
   const res = await api.user.getUserList(Object.assign(isSearch.value ? queryFormData.value : {}, page))
   if (res.code === 200) {
-    data.value = res.data.userList
+    data.value = res.data.list??[]
     total.value = res.data.total
   }
   loading.value = false

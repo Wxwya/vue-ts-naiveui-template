@@ -22,7 +22,7 @@ class AxiosRequest {
       console.error(err);
       if ((options.isRetry &&!!options.retryCount && options.retryCount <= 0) || !options.isRetry) {
         console.error('请求错误:', err)
-        return {code: 0, data: null, msg: err.message || '发送请求错误'} 
+        return  options.requestHooks.afterRequest(err.data??{}, config,err)
       }
     }
     if (options.isRetry &&!!options.retryCount && options.retryCount > 0 && options.isTimeout) {
