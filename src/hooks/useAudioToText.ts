@@ -2,9 +2,9 @@ import { ref, onMounted} from 'vue'
 const useAudioToText = () => {
   const isRecognizing = ref(false)
   const transcript = ref('')
-  let recognition: any = null
+  let recognition: InstanceType<Window['SpeechRecognition']> | null = null
   const initRecognition = () => {
-    const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognitionClass) {
       recognition = new SpeechRecognitionClass()
     } else {

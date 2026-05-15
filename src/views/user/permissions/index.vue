@@ -1,16 +1,15 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 // solar--user-check-rounded-bold
 import { computed, ref, inject, h,onMounted,usePage,closeModal,useRouter } from "@/rely/lib"
 import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon,NButton } from "@/rely/page"
 import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import UpModal from "@/components/PermissionsModal/index.vue";
-import Actions from './actions.vue';
 class QueryForm {
   permission_name: string = ''
   description: string = ''
 }
 const api = inject("api") as Api
-const { data, page, total, loading } = usePage<Permissions.PermissionsInfo>()
+const { data, page, total, loading } = usePage<Permissions.PermissionsRow>()
 const { push } = useRouter()
 const queryFormData = ref(new QueryForm())
 const rowIds = ref<DataTableRowKey[]>([])
@@ -42,12 +41,12 @@ const pagination = computed<PaginationProps>(() => ({
 const onSelect = (keys: DataTableRowKey[]) => {
   rowIds.value = keys
 }
-const initColumns = (): DataTableColumns<Permissions.PermissionsInfo> => {
-  return [
+const columns: DataTableColumns<Permissions.PermissionsRow> =[
     {
       type: 'selection',
       fixed: 'left'
     },
+    { title: 'ID', key: 'id', className: "w-[80px]" },
     {
       title: '权限名称',
       key: 'permission_name'
@@ -65,13 +64,15 @@ const initColumns = (): DataTableColumns<Permissions.PermissionsInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row: Permissions.PermissionsInfo) {
-        return h(Actions, { upData: () => onOpenModal("修改权限", row), delData: () => onDelete(row.id), toSub: () => push(`/user/buttonPermissions?id=${row.id}&prefix=${row.permission_name}`) })
-      }
+      render:(row)=>(<div class="flex items-center gap-2">
+        <NButton v-has="xwya:permission:update" text type="info" onClick={()=>onOpenModal("修改权限", row)} >修改</NButton>
+         <NButton v-has="xwya:permission:bnt" text type="info" onClick={() => push(`/user/button-permissions?id=${row.id}&prefix=${row.permission_name}`)} >按钮权限管理</NButton>
+          <NButton v-has="xwya:permission:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
+      </div>)
+
     }
 
   ]
-}
 const onBatchDelete = () => {
   window.$dialog.warning({
     title: '温馨提示',
@@ -80,6 +81,17 @@ const onBatchDelete = () => {
     negativeText: '取消',
     onPositiveClick: () => {
       onDelete()
+    }
+  })
+}
+const onDeleteTips =  (row:Permissions.PermissionsRow)=>{
+   window.$dialog.warning({
+    title: '温馨提示',
+    content: `是否确认删除 ${row.description} 权限?`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      onDelete(row.id)
     }
   })
 }
@@ -92,7 +104,7 @@ const onDelete = async (id?: number) => {
   m.destroy()
 }
 
-const onOpenModal = (title: string, row?: Permissions.PermissionsInfo) => {
+const onOpenModal = (title: string, row?: Permissions.PermissionsRow) => {
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -147,7 +159,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" :scroll-y="true" :row-key="(r) => r.id" :columns="initColumns()" :data="data" :onSelect="onSelect"
+    <XwyaTable class="flex-1" :scroll-y="true" :row-key="(r) => r.id" :columns="columns" :data="data" :onSelect="onSelect"
       :pagination="pagination" :loading="loading" />
   </div>
 </template>

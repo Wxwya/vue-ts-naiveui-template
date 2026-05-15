@@ -1,5 +1,5 @@
 declare namespace Menu {
-  interface MenuInfo {
+  interface MenuRow {
     id: number
     parent_id: number
     title: string
@@ -12,7 +12,7 @@ declare namespace Menu {
     create_time: string
   }
   interface GetMenuListApi {
-    list: MenuInfo[]
+    list: MenuRow[]
     total: number
   }
 }

@@ -32,7 +32,7 @@ class FetchRequest {
       const rquestOptionsBody = await options.requestHooks!.beforeRequest(options, config)
       return this.request<T>( rquestOptionsBody, config)
     }
-    return {code: 0, data: null, msg: '请求失败'}
+    return {code: 0, data: null, message: '请求失败'}
   }
 }
 

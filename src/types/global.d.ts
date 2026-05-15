@@ -7,7 +7,9 @@ declare global {
     $bar: import('naive-ui').LoadingBarProviderInst;
     $msg: import('naive-ui').MessageProviderInst;
     $modal: import('naive-ui').ModalProviderInst
-    SpeechRecognition: typeof SpeechRecognition 
+    SpeechRecognition: typeof SpeechRecognition
+    webkitSpeechRecognition: typeof SpeechRecognition
+    webkitAudioContext: typeof AudioContext
   };
 }
 

@@ -1,7 +1,7 @@
 import type {
-  FormItemRowProps, UploadProps, InputProps, SelectProps, DatePickerProps, RadioGroupProps, RadioProps,
-  CheckboxGroupProps, CheckboxProps, SwitchProps, CascaderProps, TransferProps, AutoCompleteProps, TreeSelectProps,
-  InputNumberProps,DynamicTagsProps} from "naive-ui";
+  FormItemRowProps, UploadProps, InputProps, SelectProps, DatePickerProps, RadioGroupProps,
+  CheckboxGroupProps, SwitchProps, CascaderProps, TransferProps, AutoCompleteProps, TreeSelectProps,
+  InputNumberProps, DynamicTagsProps, FormValidationError, RuleType } from "naive-ui";
 
 export { }
 declare global {
@@ -9,7 +9,7 @@ declare global {
   interface Mitt  {
     on: (event: string, handler: Function) => void;
     off: (event: string, handler: Function) => void;
-    emit: (event: string, payload?: any) => void;
+    emit: (event: string, payload?: unknown) => void;
   };
   interface TableCheckMeta<T> {
     row: T | undefined,
@@ -25,14 +25,15 @@ declare global {
   interface DecryptBody<T=unknown>  {
     code: number;
     data: T | null;
-    msg: string;
+    message: string;
   }
   interface TreeOptions {
     title: string;
     value: number;
     children: TreeOptions[];
   }
-  type FormValidateFunc = ()=>((error:any)=> void)
+  type FormValidateFunc = () => import('naive-ui').FormInst['validate']
+ 
  
   // type FormItemContentStruct = typeof import('naive-ui')['NInput'] & typeof import('naive-ui')['NSelect'] & typeof import('naive-ui')["NInputNumber"] & typeof import('naive-ui')['NCheckbox']
   //   & typeof import('naive-ui')['NCheckboxGroup'] & typeof import('naive-ui')['NRadioGroup'] & typeof import('naive-ui')['NRadio'] & typeof import('naive-ui')['NSwitch'] & typeof import('naive-ui')['NTreeSelect']
@@ -40,36 +41,35 @@ declare global {
   //   & typeof import("naive-ui")['NDatePicker'] & typeof import('naive-ui')['NUpload'] & typeof import('naive-ui')['NAutoComplete'] & {options?:GlobalOptions[]}
   type FormItemRowStateStruct = FormItemRowProps & {
     isShow?: boolean,
-    ruleType?:string
+    ruleType?:RuleType
   }
   type FormItemContentMap = {
-    input: InputProps & {comment?: string}
-    select: SelectProps & { options?: GlobalOptions[],comment?: string }
-    date: DatePickerProps& {comment?: string}
-    radio: RadioGroupProps&RadioProps& { options?: GlobalOptions[],comment?: string }
-    check: CheckboxGroupProps& CheckboxProps& { options?: GlobalOptions[],comment?: string }
-    tags: DynamicTagsProps& {comment?: string}
-    number: InputNumberProps& {comment?: string}
-    switch: SwitchProps& {comment?: string}
-    cascader:  CascaderProps& {comment?: string}
-    transfer:TransferProps& {comment?: string}
-    auto:AutoCompleteProps& {comment?: string}
-    upload: UploadProps& {comment?: string}
-    tree:  TreeSelectProps& {comment?: string}
+    input: InputProps & {comment?: string,placeholder?:string}
+    select: SelectProps & { comment?: string,placeholder?:string }
+    date: DatePickerProps& {comment?: string,placeholder?:string}
+    radio: RadioGroupProps & { options?: GlobalOptions[],comment?: string,placeholder?:string }
+    check: CheckboxGroupProps & { options?: GlobalOptions[],comment?: string ,placeholder?:string}
+    tags: DynamicTagsProps& {comment?: string,placeholder?:string}
+    number: InputNumberProps& {comment?: string,placeholder?:string}
+    switch: SwitchProps& {comment?: string,placeholder?:string}
+    cascader:  CascaderProps& {comment?: string,placeholder?:string}
+    transfer:TransferProps& {comment?: string,placeholder?:string}
+    auto:AutoCompleteProps& {comment?: string,placeholder?:string}
+    upload: UploadProps& {comment?: string,placeholder?:string}
+    tree:  TreeSelectProps& {comment?: string,placeholder?:string}
   }
-  type FormTypeKey = keyof FormContentMap
+  type FormTypeKey = keyof FormItemContentMap
 
   type FormItemRowMapStruct={
     [K in FormTypeKey]: {
       type:K;
       itemWidth?: string;
       item:  FormItemRowStateStruct;
-      content?: FormItemContentMap[K];
+      content?: FormItemContentMap[K] | {comment?: string,placeholder?:string};
     }
   }
   type FormItemRowStruct = FormItemRowMapStruct[keyof FormItemRowMapStruct]
   interface ComponentMap {
     [key:FormTypeKey]: DefineComponent<{}, {}, any>;
   }
-  
 }

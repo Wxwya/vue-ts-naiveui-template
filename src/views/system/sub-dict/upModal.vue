@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed} from 'vue'
-import { generateDict } from '@/api/dict';
+import { createDict,updateDict } from '@/api/dict';
 import {XwyaForm,XwyaButton} from "@/rely/page"
 import type {PropType} from 'vue'
 import type { FormRules } from "naive-ui"
@@ -14,13 +14,10 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<any>,
+    type: Object as PropType<Partial<Dict.DictRow>>,
     default: {}
   },
-  userInfo: {
-    type: Object as PropType<SystemUser.UserInfo>,
-    default: () => { }
-  },
+
   dict_type_id: {
     type: String,
     default: ''
@@ -34,7 +31,6 @@ const props = defineProps({
 const formData = ref({
   ...props.row,
   order_num: props.row.order_num ? props.row.order_num.toString() : (props.total + 1).toString(),
-  username: props.row?.username ? props.row.username : props.userInfo.username,
 })
 const loading = ref(false)
 const formItemData = computed<FormItemRowStruct[]>(() => ([
@@ -43,17 +39,22 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   { type: "input", item: {label: "排序", path: "order_num",  }, content: { placeholder: "请输入排序", } },
 ]))
 const rules = computed<FormRules>(() => {
-  return formItemData.value.reduce((acc: FormRules, cur:any, _) => {
-    if(cur.item.path==='is_default' ) return acc 
-    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder,type:cur.item.ruleType }]
+  return formItemData.value.reduce((acc: FormRules, cur: FormItemRowStruct, _) => {
+    if(cur.item.path==='is_default') return acc
+    acc[cur.item.path!] = [{ required: true, trigger: [],message:cur.content?.placeholder,type:cur.item.ruleType }]
     return acc
   }, {})
 })
 const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
-    if (errors) return 
+  validate()(async (errors) => {
+    if (errors) return
     loading.value = true
-    const res = await generateDict({dict_type_id:Number(props.dict_type_id),...formData.value,order_num:Number(formData.value.order_num)})
+    let res:any
+    if(formData.value.id && formData.value?.id>0){
+       res = await updateDict({dict_type_id:Number(props.dict_type_id),...formData.value,order_num:Number(formData.value.order_num)})
+    }else{
+      res = await createDict({dict_type_id:Number(props.dict_type_id),...formData.value,order_num:Number(formData.value.order_num)})
+    }
   if (res.code === 200) { 
     props.getData()
     props.close()

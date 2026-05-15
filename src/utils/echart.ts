@@ -43,7 +43,7 @@ echarts.use([
 ])
 export const onLoadMap = async () => { 
   const chinaMap = await import('@/assets/china.json');
-  echarts.registerMap('china', chinaMap.default as any)
+  echarts.registerMap('china', chinaMap.default as Parameters<typeof echarts.registerMap>[1])
 }
 
 // 导出

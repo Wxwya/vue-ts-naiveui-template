@@ -1,9 +1,9 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 // solar--user-id-bold 显示动态图标
-import { computed, ref, inject, h,onMounted,usePage,closeModal,useUserStore,OptionsKeyEnums } from "@/rely/lib"
-import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon,NSwitch,NButton } from "@/rely/page"
+import { computed, ref, inject, h, onMounted, usePage, closeModal, useUserStore, OptionsKeyEnums } from "@/rely/lib"
+import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon, NSwitch, NButton } from "@/rely/page"
 import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
-import Acruibs from "./actions.vue"
+import { storeToRefs } from "pinia";
 import UpModal from './upModal.vue';
 class UserQueryForm {
   username = ""
@@ -14,27 +14,28 @@ class UserQueryForm {
   status = null
 }
 const api = inject("api") as Api
-const { data, total, loading, page } = usePage<SystemUser.UserInfo>()
-  const { defaultOptions} = useUserStore()
+const { data, total, loading, page } = usePage<SystemUser.UserRow>()
+const { defaultOptions } = storeToRefs(useUserStore())
+
 const rolesOption = ref<GlobalOptions<number>[]>([])
 const queryFormData = ref({})
 const rowIds = ref<DataTableRowKey[]>([])
 const isSearch = ref(false)
 const queryFormItem = computed<FormItemRowStruct[]>(() => [
-  { type: 'input',itemWidth:"260px",  item: { label: '用户名', path: 'username' }, content: { placeholder: '请输入用户名' } },
-  { type: 'input',itemWidth:"260px",  item: { label: '账号', path: 'account', }, content: { placeholder: '请输入账号' } },
-  { type: 'input',itemWidth:"260px",  item: { label: "邮箱", path: "email", }, content: { placeholder: "请输入邮箱" } },
-  { type: 'input',itemWidth:"260px", item: { label: "手机号", path: "phone", }, content: { placeholder: "请输入手机号" } },
-  { type: "select",itemWidth:"260px", item: { label: "角色", path: "roles" }, content: { placeholder: "请选择角色", options: rolesOption.value ,multiple: true} },
-  { type: "select",itemWidth:"260px", item: { label: "状态", path: "status", }, content: { placeholder: "请选择状态", options: defaultOptions[OptionsKeyEnums.STATUS] } },
+  { type: 'input', itemWidth: "260px", item: { label: '用户名', path: 'username' }, content: { placeholder: '请输入用户名' } },
+  { type: 'input', itemWidth: "260px", item: { label: '账号', path: 'account', }, content: { placeholder: '请输入账号' } },
+  { type: 'input', itemWidth: "260px", item: { label: "邮箱", path: "email", }, content: { placeholder: "请输入邮箱" } },
+  { type: 'input', itemWidth: "260px", item: { label: "手机号", path: "phone", }, content: { placeholder: "请输入手机号" } },
+  { type: "select", itemWidth: "260px", item: { label: "角色", path: "role_ids" }, content: { placeholder: "请选择角色", options: rolesOption.value, multiple: true } },
+  { type: "select", itemWidth: "260px", item: { label: "状态", path: "status", }, content: { placeholder: "请选择状态", options: defaultOptions.value[OptionsKeyEnums.STATUS] } },
 ])
 const pagination = computed<PaginationProps>(() => ({
   itemCount: total.value,
-  pageSizes: [10, 20,30,40,50],
+  pageSizes: [10, 20, 30, 40, 50],
   pageSlot: 5,
   pageSize: page.pageSize,
   showSizePicker: true,
-  prefix: () => { 
+  prefix: () => {
     return '共 ' + total.value + ' 条';
   },
   page: page.pageNum,
@@ -59,64 +60,78 @@ const onSearch = (state: boolean, change: Function) => {
 }
 const getData = async () => {
   loading.value = true
-  const res = await api.user.getUserList(Object.assign(isSearch.value?queryFormData.value : {},page))
+  const res = await api.user.getUserList(Object.assign(isSearch.value ? queryFormData.value : {}, page))
   if (res.code === 200) {
-    data.value = res!.data!.list
-    total.value = res!.data!.total
+    data.value = res?.data?.list ?? []
+    total.value = res?.data?.total ?? 0
   }
   loading.value = false
 }
-const initColumns = (): DataTableColumns<SystemUser.UserInfo> => {
-  return [
-    {
-      type: 'selection',
-      fixed: 'left'
+const columns: DataTableColumns<SystemUser.UserRow> = [
+  {
+    type: 'selection',
+    fixed: 'left'
+  },
+  { title: 'ID', key: 'id', className: "min-w-[80px]" },
+  {
+    title: '名称',
+    key: 'username',
+    className: "min-w-[120px]"
+  },
+  {
+    title: '账号',
+    key: 'account',
+    className: "min-w-[120px]"
+  },
+  {
+    title: '邮箱',
+    key: 'email',
+    className: "min-w-[120px] truncate"
+  },
+  {
+    title: '手机号',
+    key: 'phone',
+    className: "min-w-[120px] truncate"
+  },
+  {
+    title: '角色',
+    key: 'role_info',
+    className: "min-w-[120px] truncate",
+    render: (row) => {
+      if (!row.roles.length) return "-"
+      return row.roles.map((item) => item.description).join(",")
     },
-    {
-      title: '名称',
-      key: 'username'
-    },
-    {
-      title: '账号',
-      key: 'account'
-    },
-    {
-      title: '邮箱',
-      key: 'email'
-    },
-    {
-      title: '手机号',
-      key: 'phone'
-    },
-    {
-      title: '角色',
-      key: 'role_info',
-      render(row: SystemUser.UserInfo) {
-        return h('div', {}, { default: () => row.role_info.join(',') })
-      }
-    },
-    {
-      title: "状态",
-      key: "status",
-      render(row: SystemUser.UserInfo) {
-        return h(NSwitch, { value: row.status, 'on-update:value': (val) => changeStatus(row.id, val) })
-      }
-    },
-    {
-      title: "创建时间",
-      key: "create_time"
-    },
-    {
-      align: "center",
-      title: "操作",
-      key: "actions",
-      render(row: SystemUser.UserInfo) {
-        return h(Acruibs, { upData: () => onOpenModal("修改用户", row), delData: () => onDelete(row.id) })
-      }
-    }
-  ]
-}
-const onOpenModal = (title: string, row: SystemUser.UserInfo | undefined = undefined) => {
+  },
+  {
+    title: "状态",
+    key: "status",
+    className: "min-w-[120px]",
+    render: (row) => (<NSwitch value={row.status} onUpdateValue={(val) => changeStatus(row.id, val)} />)
+  },
+  {
+    title: "创建时间",
+    key: "create_time",
+    className: "min-w-[220px]",
+  },
+  {
+    align: "center",
+    title: "操作",
+    key: "actions",
+    className: "min-w-[200px]",
+    render: (row) => (
+      <div class="flex items-center gap-2">
+        <NButton v-has="xwya:user:update" text type="info" onClick={() => onOpenModal("修改用户", row)} >修改</NButton>
+        <NButton v-has="xwya:user:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
+        {/* <XwyaButton  onClick={()=>onOpenModal("修改用户", row)} circle type="warning" iconSize="20"
+       text="修改" /> */}
+      </div>
+    )
+    // return h(Acruibs, { upData: () => onOpenModal("修改用户", row), delData: () => onDelete(row.id) })
+
+  }
+]
+
+const onOpenModal = (title: string, row: SystemUser.UserRow | undefined = undefined) => {
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -140,6 +155,17 @@ const onBatchDelete = () => {
     }
   })
 }
+const onDeleteTips = (row: SystemUser.UserRow) => {
+  window.$dialog.warning({
+    title: '温馨提示',
+    content: `是否确认删除用户${row.username}?`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      onDelete(row.id)
+    }
+  })
+}
 const onDelete = async (id?: number) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.user.delUser(id ? [id] : rowIds.value)
@@ -153,7 +179,7 @@ const getRolesOption = async () => {
   rolesOption.value = res!.data!
 }
 const changeStatus = async (id: number, status: boolean) => {
-  const res = await api.user.changeUserStatus({ id, status: status })
+  const res = await api.user.changeUserStatus({ id, status })
   if (res.code === 200) {
     getData()
   }
@@ -166,7 +192,7 @@ onMounted(() => {
 
 <template>
   <div class="h-full flex flex-col gap-4">
-    <XwyaForm   label-placement="left"  :item-list="queryFormItem" v-model="queryFormData"  :row="4" :col="2" >
+    <XwyaForm label-placement="left" :item-list="queryFormItem" v-model="queryFormData" :row="4" :col="2">
       <template #default="{ change, state }">
         <n-button :type="!state ? 'primary' : 'error'" @click="onSearch(state, change)">
           <XwyaIcon v-if="state" icon="solar--close-circle-bold" class="text-base" />
@@ -187,8 +213,8 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" :scroll-y="true"   :columns="initColumns()" :data="data" :onSelect="onSelect" :pagination="pagination"
-      :loading="loading" />
+    <XwyaTable class="flex-1 " :scroll-y="true" :columns="columns" :data="data" :onSelect="onSelect"
+      :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

@@ -11,11 +11,12 @@ type WsConfig = {
   heartbeatSendTime?: number
   reconnectTimeInterval?: number
 }
-type MessageData = {
-  type: number // 1:心跳 2:单聊 3:群聊 4:系统消息
-  data: any // 消息内容
-  sender: string // 发送者
-  receiver: string // 接收者 
+type MsgType = 1 | 2 | 3 | 4 // 1:心跳 2:单聊 3:群聊 4:系统消息
+type MessageData<T = unknown> = {
+  type: MsgType
+  data: T
+  sender: string
+  receiver: string
 }
 type WebsocketExample = {
   name: string
@@ -110,11 +111,8 @@ class Ws {
       throw new Error('ws 名称和url不能为空')
      
     }
-    let wsUrl
-    if (this.baseUrl) {
-      wsUrl = this.baseUrl + url
-    }
-    let ws = new WebSocket(wsUrl,this.header)
+    const wsUrl: string = this.baseUrl ? this.baseUrl + url : url
+    let ws = new WebSocket(wsUrl, this.header)
     let myWs: WebsocketExample = {
       name,
       url,
@@ -162,7 +160,7 @@ class Ws {
       if (!errorCodes.includes(event.code)) return
       let wsExample = this.sockteManager.get(name)
       if (!this.isNetwork) {
-        throw new Error('网络异常')
+        console.error(`[Ws] ${name} 网络断开，等待网络恢复后自动重连`)
         return
       }
       if (wsExample && wsExample.isActiveClose) {
@@ -176,7 +174,7 @@ class Ws {
     return name
   }
   // 关闭
-  close(name) {
+  close(name: string) {
     if (this.sockteManager.has(name)) {
       let wsExample = this.sockteManager.get(name)
       if (wsExample) { 
@@ -190,7 +188,7 @@ class Ws {
       this.startWroker()
     
   }
-  private  deleteMap(name) {
+  private deleteMap(name: string) {
     this.sockteManager.delete(name)
     this.onMessage.delete(name)
     this.onError.delete(name)
@@ -200,12 +198,14 @@ class Ws {
      }
   }
   // 重连
-  private  reconnect(name) {
+  private reconnect(name: string) {
     let wsExample = this.sockteManager.get(name)
-    if (wsExample) { 
+    if (wsExample) {
       if (wsExample.reconnectCount <= 0) {
         this.deleteMap(name)
-        throw new Error('重连失败')
+        const err = new Event('error')
+        this.onError.get(name)?.forEach((f) => f(err))
+        console.error(`[Ws] ${name} 重连次数耗尽，连接已断开`)
         return
       }
       setTimeout(() => {

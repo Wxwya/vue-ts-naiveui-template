@@ -1,112 +1,128 @@
-import type {  EncryptionBody } from './request'
+import type { EncryptionBody } from './request'
+
 class Lock {
   private static instance?: Lock
-  private readonly publicKey: string =
-    'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCtZz85trc2HhDlUwlS6/DSPVi9qIYGLdvW+DJvrxvC2dTx3msPAcDcNQMzoTsY+KSfBGifu9UkKCV8MT9UXt8TRNZapW9fvH+7v9K52p8fRNmaK1ajA+shTI9c25eXToTDsEpDRMpvsQTsgGOjD0JPItRAGVYS5MIWkW55x1jlMwIDAQAB'
-  private readonly privateKey: string =
-    'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMYNe6IZLnQlNlynEYBmSeY+Na+Pa713eTYEIZevykvtnBQcrd/27XjPesusLw8HpisJA/fw9deCWsj5DTrcVcypXkV/dKjMeACwf1t/0mWf/r5muXez1lQYA22ECPqsyjKbzI0d4VvQjeoqxzyNK16tjFhvBRYd6Ov2ru8uC6vpAgMBAAECgYBsj+95R3xjRhKqbxn03B0eDHO5LFDOprLWnSUc1Mt7G2A21hGpdt1tH64b/uI8xuCbLnHycy8PVvEUwRAzd5u/gRuLcq3MQ7XS8pTQzrGb+LP/7wSFfy97ApMbM3+gNbeojXYhOYXQbNpRpFdk/+FE44xkosKMD6ELffL1llP8AQJBANwL33uDd7aMqYato8cw2tnXEyjMeCGCc8XET7xdeDP1FTXBWNGpqEoMBND0gu1StqIsbP8JzgLWqUK5j7SG0mECQQDmaaeAz+CbOHR94YrF3lLNkP0r0nT0qV/dZBpIqWcDMeGWgtGsmTrujuecvp6qCOjFyShNAyD7XcaLQ9IrCNaJAkEAgrKSpPwrSMQ3lQThuFguRSFYAe2glNa1CQxXB9zEnqe9V1Zl+PI6QPDuk2YHtgpg6+ZTPxCFym3Rzw4EaweBQQJAEwt+neYQ0aOr9U+0McC7pWQrmPivVB2/38PLbGAcNKZl2BP+Er8joN5NBKa45KMR4m9LFnqAumY45//2GjqDyQJAJDCZVwUybIOC+VSvEwdfX+YIcevFE3ROiGrrHiZMXFBqvIs0hOoOzBIDy5wDIhDBSqKI7r0xJ+UH2Y+5Pj9OWw=='
+  private publicKey: string = ''   // 后端公钥，用于加密请求
+  private privateKey: string = ''  // 前端私钥，用于解密响应
 
-    public static generateInstance(): Lock {
+  public static generateInstance(): Lock {
     if (!this.instance) {
       this.instance = new Lock()
     }
     return this.instance
   }
-  private generateRandomIV():Uint8Array<ArrayBuffer>{
-    return crypto.getRandomValues(new Uint8Array(12))
+
+  setKeys(backendPublicKey: string, frontendPrivateKey: string) {
+    this.publicKey = backendPublicKey
+    this.privateKey = frontendPrivateKey
   }
-  // 生成aes
+
+  private generateRandomIV(): Uint8Array<ArrayBuffer> {
+    return crypto.getRandomValues(new Uint8Array(12)) as Uint8Array<ArrayBuffer>
+  }
+
   private async generateAESKey(): Promise<CryptoKey> {
-    return await crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM', // 可选: "AES-CBC", "AES-CTR"
-        length: 256, // 128, 192, or 256 bits
-      },
-      true, // 是否可导出
-      ['encrypt', 'decrypt'] // 允许的操作
+    return crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
     )
   }
-  private exportAesKey(key: CryptoKey): Promise<ArrayBuffer>{
-    return crypto.subtle.exportKey('raw', key)
-  }
+
   private arrayBufferToBase64(buffer: ArrayBuffer): string {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)))
   }
+
   private base64ToArrayBuffer(base64: string): ArrayBuffer {
-    const binaryString = atob(base64)
-    const bytes = new Uint8Array(binaryString.length)
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i)
+    const binary = atob(base64)
+    const bytes = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i)
     }
     return bytes.buffer
   }
-  private async encryptionIV(iv: ArrayBuffer): Promise<ArrayBuffer> {
-    const publicKeyBuffer = this.base64ToArrayBuffer(this.publicKey)
-    const publicKey = await crypto.subtle.importKey(
-      'spki', // <-- 确保格式是 "spki"
-      publicKeyBuffer,
-      {
-        name: 'RSA-OAEP',
-        hash: 'SHA-256',
-      },
+
+  private async importPublicKey(): Promise<CryptoKey> {
+    if (!this.publicKey) {
+      throw new Error('[LockAuth] 后端公钥未初始化，请先调用 lock.setKeys()')
+    }
+    return crypto.subtle.importKey(
+      'spki',
+      this.base64ToArrayBuffer(this.publicKey),
+      { name: 'RSA-OAEP', hash: 'SHA-256' },
       false,
       ['encrypt']
     )
-    return  crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, iv)
   }
-  private async decryptIV(iv: ArrayBuffer): Promise<ArrayBuffer> {
-    const privateKeyBuffer = this.base64ToArrayBuffer(this.privateKey)
-      const privateKey = await crypto.subtle.importKey(
-        'pkcs8', 
-        privateKeyBuffer,
-        {
-          name: 'RSA-OAEP',
-          hash: 'SHA-256',
-        },
+
+  private async importPrivateKey(): Promise<CryptoKey> {
+    if (!this.privateKey) {
+      throw new Error('[LockAuth] 前端私钥未初始化，请先调用 lock.setKeys()')
+    }
+    return crypto.subtle.importKey(
+      'pkcs8',
+      this.base64ToArrayBuffer(this.privateKey),
+      { name: 'RSA-OAEP', hash: 'SHA-256' },
+      false,
+      ['decrypt']
+    )
+  }
+
+  async encryptionRequestBody(data: Record<string, unknown>): Promise<EncryptionBody> {
+    const iv = this.generateRandomIV()
+    const aesKey = await this.generateAESKey()
+    const rawAesKey = await crypto.subtle.exportKey('raw', aesKey)
+
+    const encryptedData = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      aesKey,
+      new TextEncoder().encode(JSON.stringify(data))
+    )
+
+    // IV 和 AES key 都用后端公钥加密
+    const publicKey = await this.importPublicKey()
+    const [encryptedIv, encryptedKey] = await Promise.all([
+      crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, iv),
+      crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, rawAesKey),
+    ])
+
+    return {
+      iv: this.arrayBufferToBase64(encryptedIv),
+      key: this.arrayBufferToBase64(encryptedKey),
+      data: this.arrayBufferToBase64(encryptedData),
+    }
+  }
+
+  async decryptResponseBody<T>(body: EncryptionBody): Promise<DecryptBody<T> | null> {
+    try {
+      const privateKey = await this.importPrivateKey()
+
+      // IV 和 AES key 都用前端私钥解密
+      const [iv, rawAesKey] = await Promise.all([
+        crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, this.base64ToArrayBuffer(body.iv)),
+        crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, this.base64ToArrayBuffer(body.key)),
+      ])
+
+      const aesKey = await crypto.subtle.importKey(
+        'raw',
+        rawAesKey,
+        { name: 'AES-GCM' },
         false,
         ['decrypt']
       )
-      // 解密数据
-      // const encryptedBuffer = base64ToArrayBuffer(encryptedBase64);
-      return crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, iv)
-  }
-  async encryptionRequestBody(data: any):Promise<EncryptionBody>  {
-    let iv = this.generateRandomIV() as unknown as ArrayBuffer
-    const aesKey = await this.generateAESKey()
-    const aesKeyBuffer = await this.exportAesKey(aesKey)
-    const encodedData = new TextEncoder().encode(JSON.stringify(data))
-    const originalData = await crypto.subtle.encrypt(
-      {
-        name: 'AES-GCM',
-        iv: iv,
-      },
-      aesKey,
-      encodedData
-    )
-    iv = await this.encryptionIV(iv)
-    return {
-      iv: this.arrayBufferToBase64(iv), 
-      data: this.arrayBufferToBase64(originalData),
-      key: this.arrayBufferToBase64(aesKeyBuffer),
-    } 
-  }
 
-  async decryptResponseBody<T>(body: EncryptionBody):Promise<DecryptBody<T>| null>  {
-    try {
-        let iv = this.base64ToArrayBuffer(body.iv)
-        let aesKey = this.base64ToArrayBuffer(body.key)
-        const originalData = this.base64ToArrayBuffer(body.data)
-        iv = await this.decryptIV(iv)
-        const key = await crypto.subtle.importKey('raw', aesKey, { name: 'AES-GCM' }, false, ['decrypt'])
-        // 3️⃣ AES-GCM 解密
-        const decryptedBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, originalData)
-        return JSON.parse(new TextDecoder().decode(decryptedBuffer))
-      } catch (err) {
-        return null
+      const decryptedBuffer = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        aesKey,
+        this.base64ToArrayBuffer(body.data)
+      )
+
+      return JSON.parse(new TextDecoder().decode(decryptedBuffer))
+    } catch {
+      return null
     }
   }
 }
 
 const lock = Lock.generateInstance()
-
 export default lock

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue"
-import { generateMenu } from '@/api/menu';
+import { createMenu,updateMenu } from '@/api/menu';
 import { XwyaForm, XwyaButton } from "@/rely/page"
 import type {PropType} from "vue"
 import type { FormRules } from "naive-ui"
@@ -14,7 +14,7 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<Menu.MenuInfo>,
+    type: Object as PropType<Menu.MenuRow>,
     default:()=> {}
   },
   total: {
@@ -46,17 +46,17 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   { type: 'switch', item: { label: '总是显示', path: 'always_show',isShow:!!props.parent_id } },
 ]))
 const rules= computed(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
+  return formItemData.value.reduce((acc:FormRules, cur: FormItemRowStruct, _) => {
     if(cur.item.path==='icon' || cur.item.path==='hidden' || cur.item.path==='always_show') return acc
-    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder}]
+    acc[cur.item.path!] = [{ required: true, trigger: [],message:cur.content?.placeholder}]
     return acc
   }, {})
 })
 const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
-    if (errors) return 
+  validate()(async (errors) => {
+    if (errors) return
     loading.value = true
-    if (props.parent_id) { 
+    if (props.parent_id) {
       if (!formData.value.path.startsWith(props.prefix)) { 
       window.$msg.error('路径前缀缺少' + props.prefix)
       loading.value=false
@@ -68,7 +68,13 @@ const submit = async (validate: FormValidateFunc) => {
       return
     }
     }
-    const res = await generateMenu({...formData.value, sort: Number(formData.value.sort),parent_id: Number(props.parent_id)})
+    let res :any
+    if(formData.value.id>0){
+      res = await updateMenu({...formData.value, sort: Number(formData.value.sort),parent_id: Number(props.parent_id)})
+    }else{
+      res = await createMenu({...formData.value, sort: Number(formData.value.sort),parent_id: Number(props.parent_id)})
+
+    }
   if (res.code === 200) { 
     props.getData()
     props.close()

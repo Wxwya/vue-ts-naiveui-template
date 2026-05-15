@@ -12,11 +12,12 @@ export function deepClone<T>(obj: T): T{
   if (obj === null || typeof obj !== 'object') return obj;
   if (Array.isArray(obj)) return obj.map(deepClone) as T;
 
-  const clonedObj: any = {};
+  const clonedObj = {} as T
   for (const key in obj) {
-    clonedObj[key] = deepClone(obj[key]);
+    const k = key as keyof T
+    clonedObj[k] = deepClone(obj[k])
   }
-  return clonedObj;
+  return clonedObj
 }
 
 /**

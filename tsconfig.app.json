@@ -19,12 +19,10 @@
     "jsx": "preserve", // 是否将 JSX 编译为 React 代码
     "removeComments": true, // 是否移除 TypeScript 代码中的注释
     "noEmitHelpers": true, // 是否禁止生成 TypeScript 帮助函数
-    "downlevelIteration": true, // 是否将 for...of 循环编译为适用于旧版 JavaScript 的代码
     "importHelpers": true, // 是否使用模块化方式引入帮助函数
     /* Path aliases */
-    "baseUrl": ".", // 设置基础路径
     "paths": {
-      "@/*": ["src/*"] // 设置路径别名
+      "@/*": ["./src/*"] // 设置路径别名
     },
     "types": ["naive-ui/volar","vite/client"], // 设置 TypeScript 类型声明文件
     /* Linting */
@@ -35,5 +33,5 @@
     "noFallthroughCasesInSwitch": true, // 是否允许 switch 语句中的 fallthrough
     "noUncheckedSideEffectImports": true // 是否允许未检查的副作用导入
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue","types/**/*.d.ts"]
 }

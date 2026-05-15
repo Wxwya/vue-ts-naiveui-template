@@ -1,6 +1,7 @@
 import { createRouter,createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 // , createWebHistory
+import { defineAsyncComponent } from 'vue'
 import { deepClone } from '@/utils/handle'
 import layout from '@/layouts/index.vue'
 declare module 'vue-router' {
@@ -24,14 +25,14 @@ export let pageRoutes: RouteRecordRaw[] = [
         name: 'form',
         meta: { title: '表单示例' },
         icon: 'solar--document-text-bold',
-        component: () => import('@/views/form/index.vue'),
+        component: defineAsyncComponent(() => import('@/views/form/index.vue')),
       },
       {
         path: '/table',
         name: 'table',
         meta: { title: '表格示例' },
         icon: 'solar--clapperboard-bold',
-        component: () => import('@/views/table/index.vue'),
+        component: defineAsyncComponent(() => import('@/views/form/index.vue')),
       },
       // {
       //   path: '/other',

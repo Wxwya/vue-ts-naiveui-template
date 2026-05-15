@@ -1,8 +1,8 @@
 import cache from "@/utils/cache";
 import { VERSION } from "@/enums/cacheEnums";
 import { onBeforeUnmount, onMounted } from "vue";
-let version:any = cache.getLocalStorage(VERSION);
-let timer: any = null;
+let version: string | null = cache.getLocalStorage<string>(VERSION)
+let timer: ReturnType<typeof setInterval> | null = null
 let isModal= false
 const TIME_DATE = 1000 * 60 * 30 
 const useUpdate = () => { 

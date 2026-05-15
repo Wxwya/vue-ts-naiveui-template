@@ -13,39 +13,34 @@ const cache = {
   local_key: CacheEnums.LOCAL_KEY,
   cookie_key: CacheEnums.COOKIE_KEY,
   session_key: CacheEnums.SESSION_KEY,
-  setCookie(key: string, value: any, option:CookieOptions= {}) { 
+  setCookie(key: string, value: unknown, option: CookieOptions = {}) {
     Cookies.set(this.cookie_key + key, value, option)
   },
-  getCookie(key: string):any{ 
-    return Cookies.get(this.cookie_key + key)
+  getCookie<T = string>(key: string): T | undefined {
+    return Cookies.get(this.cookie_key + key) as T | undefined
   },
-  setLocalStorage(key: string, value: any, expire?: number) { 
-    let data: any = {
-      expire: expire ? this.time() + expire : "",
+  setLocalStorage(key: string, value: unknown, expire?: number) {
+    const data = JSON.stringify({
+      expire: expire ? this.time() + expire : '',
       value,
-    };
-    if (typeof data === "object") {
-      data = JSON.stringify(data);
-    }
+    })
     localStorage.setItem(this.local_key + key, data)
   },
-  getLocalStorage(key: string): any { 
-    let data = localStorage.getItem(this.local_key + key)
-    if (!data) {
-      return null;
-    }
-    const { value, expire } = JSON.parse(data);
+  getLocalStorage<T = unknown>(key: string): T | null {
+    const raw = localStorage.getItem(this.local_key + key)
+    if (!raw) return null
+    const { value, expire } = JSON.parse(raw)
     if (expire && expire < this.time()) {
       localStorage.removeItem(this.local_key + key)
-      return null;
+      return null
     }
-    return  value
+    return value as T
   },
-  setSessionStorage(key: string, value: any) { 
-    sessionStorage.setItem(this.session_key + key, value)
+  setSessionStorage(key: string, value: unknown) {
+    sessionStorage.setItem(this.session_key + key, String(value))
   },
-  getSessionStorage(key: string):any{ 
-    return sessionStorage.getItem(this.session_key + key)
+  getSessionStorage<T = string>(key: string): T | null {
+    return sessionStorage.getItem(this.session_key + key) as T | null
   },
   clear(key:RemoveKey) {
     if (key === "all") {

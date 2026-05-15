@@ -2,7 +2,7 @@
   <n-data-table
     v-tableY="{ scrollY: scrollY, page: pagination, show: paginateSinglePage }"
     :remote="true"
-    size="large"
+    size="small"
     @update:checked-row-keys="onSelect!"
     bordered
     :single-line="false"
@@ -63,5 +63,30 @@ import type { PaginationProps, DataTableColumns, DataTableRowKey, DataTableRowDa
 }
 .n-data-table > :deep(.n-data-table-wrapper) > .n-data-table-base-table > .n-data-table-base-table-body {
   max-height: var(--table-max-height);
+}
+.n-data-table >:deep(.n-data-table-wrapper) >.n-data-table-base-table{
+  position: relative;
+  height: 100% !important;
+}
+.n-data-table >:deep(.n-data-table-wrapper){
+  height: 100% !important;
+}
+.n-data-table >:deep(.n-data-table-wrapper) >.n-data-table-base-table>.n-data-table-base-table-body>.n-scrollbar-container>.n-scrollbar-content{
+  height: 100%;
+  min-width:100% !important ;
+  overflow-x: auto;
+}
+.n-data-table >:deep(.n-data-table-wrapper) >.n-data-table-base-table .n-empty{
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.n-data-table >:deep(.n-data-table-wrapper) >.n-data-table-base-table>.n-data-table-base-table-body .n-data-table-table >.n-data-table-thead{
+  /* background-color: red !important; */
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
 }
 </style>

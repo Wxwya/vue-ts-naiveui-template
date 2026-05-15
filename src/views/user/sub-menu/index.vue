@@ -1,9 +1,9 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import { computed, ref, inject, h,onMounted,usePage,closeModal,useUserStore,OptionsKeyEnums,useRoute } from "@/rely/lib"
 import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon,NSwitch,NButton } from "@/rely/page"
 import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
+import { storeToRefs } from "pinia";
 import UpModal from "@/components/MenuModal/index.vue";
-import Actions from './actions.vue';
 class QueryForm { 
   title: string = ''
   path: string = ''
@@ -11,15 +11,15 @@ class QueryForm {
 }
 const { query } = useRoute()
 const api = inject("api") as Api
-const { defaultOptions} = useUserStore()
-const { data, page, total, loading } = usePage<Menu.MenuInfo>() 
+const { defaultOptions} = storeToRefs(useUserStore())
+const { data, page, total, loading } = usePage<Menu.MenuRow>() 
 const queryFormData = ref(new QueryForm())
 const rowIds = ref<DataTableRowKey[]>([])
 const isSearch = ref(false)
 const queryFormItem = computed<FormItemRowStruct[]>(() => ([
   { type: "input", item: { label: '菜单名称', path: 'title', }, content: { placeholder: '请输入菜单名称' } },
   { type: "input", item: { label: '菜单路径', path: 'path', }, content: { placeholder: '请输入菜单路径' } },
-  { type: "select", item: { label: "状态", path: "status"  }, content: {placeholder: "请选择状态", options: defaultOptions[OptionsKeyEnums.STATUS]} }
+  { type: "select", item: { label: "状态", path: "status"  }, content: {placeholder: "请选择状态", options: defaultOptions.value[OptionsKeyEnums.STATUS]} }
   
 ]))
 const pagination = computed<PaginationProps>(() => ({
@@ -45,12 +45,12 @@ const pagination = computed<PaginationProps>(() => ({
 const onSelect = (keys:DataTableRowKey[]) => {
   rowIds.value = keys
 }
-const initColumns = ():DataTableColumns<Menu.MenuInfo> => {
-  return [
+const columns :DataTableColumns<Menu.MenuRow> =  [
     {
       type: 'selection',
       fixed: 'left'
     },
+    { title: 'ID', key: 'id', className: "w-[80px]" },
     {
       title: '菜单名称',
       key: 'title'
@@ -66,7 +66,7 @@ const initColumns = ():DataTableColumns<Menu.MenuInfo> => {
     {
       title: "状态",
       key: "status",
-      render(row:Menu.MenuInfo) { 
+      render(row:Menu.MenuRow) { 
         return h(NSwitch, { value: row.status!, 'on-update:value': (val) => changeStatus(row.id!,val) })
       }
     },
@@ -74,13 +74,12 @@ const initColumns = ():DataTableColumns<Menu.MenuInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row:Menu.MenuInfo) {
-        return h(Actions, { upData: () => onOpenModal("修改子菜单", row), delData: () => onDelete(row.id!) })
-      }
+      render:(row)=>(<div class="flex items-center gap-2">
+        <NButton v-has="xwya:menu:update" text type="info" onClick={()=>onOpenModal("修改子菜单", row)} >修改</NButton>
+          <NButton v-has="xwya:menu:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
+      </div>)
     }
-
   ]
-}
 const onSearch = (state:boolean, change:Function) => { 
   page.pageNum = 1
   if (state) { 
@@ -90,14 +89,14 @@ const onSearch = (state:boolean, change:Function) => {
   getData()
   change()
 }
-const onOpenModal = (title:string,row?:Menu.MenuInfo ) => { 
+const onOpenModal = (title:string,row?:Menu.MenuRow ) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
     style: {
       width:"600px"
     },
-   content: () => h(UpModal, {close:()=>closeModal(m),row,getData,parent_id:(query as any).id, total:total.value,prefix:row?'':(query as any).prefix})
+   content: () => h(UpModal, {close:()=>closeModal(m),row,getData,parent_id: query.id as string, total:total.value,prefix:row?'': query.prefix as string})
   })
 }
 const onBatchDelete = () => {
@@ -111,6 +110,17 @@ const onBatchDelete = () => {
     }
   })
 }
+const onDeleteTips =  (row:Menu.MenuRow)=>{
+   window.$dialog.warning({
+    title: '温馨提示',
+    content: `是否确认删除 ${row.title} 子菜单?`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      onDelete(row.id)
+    }
+  })
+}
 const onDelete = async (id?:number) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.menu.delMenu(id ? [id] : rowIds.value )
@@ -121,7 +131,7 @@ const onDelete = async (id?:number) => {
 }
 const getData = async () => { 
   loading.value = true
-  const res = await api.menu.getMenuList(Object.assign(isSearch.value ? queryFormData.value : {}, page, {parent_id:parseInt((query as any).id)}))
+  const res = await api.menu.getMenuList(Object.assign(isSearch.value ? queryFormData.value : {}, page, {parent_id:parseInt(query.id as string)}))
   if (res.code === 200) { 
     data.value = res.data!.list
     total.value = res.data!.total
@@ -161,7 +171,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class=" flex-1" :scroll-y="true" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class=" flex-1" :scroll-y="true" :columns="columns" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

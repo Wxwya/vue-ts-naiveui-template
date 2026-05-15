@@ -59,14 +59,13 @@ const mainStyle = computed(() => ({
   }))
 const login = async () => {
   const m = window.$msg.loading('登录中...', { duration: 0 })
-  const res = await api.system.login(info) as any
-  if (res?.code === 200) { 
+  const res = await api.system.login(info)
+  if (res?.code === 200) {
     // 单token
-    cache.setLocalStorage(TokenEnums.TOKEN_KEY,res.token)
+    // cache.setLocalStorage(TokenEnums.TOKEN_KEY, res.data?.token)
     // 双token
-    // cache.setLocalStorage(TokenEnums.TOKEN_KEY, res.access_token)
-    // cache.setLocalStorage(TokenEnums.REFRESH_KEY, res.refresh_token)
-    console.log("跳转,",res);
+    cache.setLocalStorage(TokenEnums.TOKEN_KEY, res?.data?.access_token)
+    cache.setLocalStorage(TokenEnums.REFRESH_KEY, res?.data?.refresh_token)
     
     push({ path: (query.redirect ? query.redirect : '/') as string, })
   }

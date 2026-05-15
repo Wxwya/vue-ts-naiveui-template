@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed,onMounted } from "vue"
-import { generateRole,getRoleInfo } from "@/api/role";
+import { createRole,getRoleInfo,updateRole } from "@/api/role";
 import { getMenuOptions  } from "@/api/menu";
 import { getPermissionsOptions } from "@/api/permissions";
 import { XwyaForm, XwyaButton } from "@/rely/page"
@@ -32,17 +32,22 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   { type: "tree", item: { label: "权限配置", path: "permissions_ids" },content: {labelField:"title",multiple:true,checkable:true, keyField:"value", placeholder:"请选择权限",options:permissionsOption.value}},
 ]))
 const rules = computed(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
-    if (cur.item.path === 'menu_ids' || cur.item.path === 'permissions_ids') return acc 
-    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder }]
+  return formItemData.value.reduce((acc:FormRules, cur: FormItemRowStruct, _) => {
+    if (cur.item.path === 'menu_ids' || cur.item.path === 'permissions_ids') return acc
+    acc[cur.item.path!] = [{ required: true, trigger: [],message:cur.content?.placeholder }]
     return acc
   }, {})
 })
 const submit = async (validate:FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
-    if (errors) return 
+  validate()(async (errors) => {
+    if (errors) return
     loading.value = true
-  const res = await generateRole(formData.value)
+    let res :any 
+    if(formData.value.id){
+      res = await updateRole(formData.value)
+    }else{
+       res = await createRole(formData.value)
+    }
   if (res.code === 200) { 
     props.getData()
     props.close()

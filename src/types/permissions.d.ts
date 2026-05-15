@@ -1,5 +1,5 @@
 declare namespace Permissions {
-  interface PermissionsInfo { 
+  interface PermissionsRow { 
     id: number;
     permission_name: string;
     description: string;
@@ -7,7 +7,7 @@ declare namespace Permissions {
     create_time: string;
   }
   interface GetPermissionsListApi  {
-    list: PermissionsInfo[]
+    list: PermissionsRow[]
     total: number
   }
 }

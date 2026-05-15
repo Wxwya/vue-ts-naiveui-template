@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {ref, computed,OptionsKeyEnums,useUserStore } from "@/rely/lib"
-import { generateDictType } from '@/api/dict';
+import { createDictType,updateDictType } from '@/api/dict';
 import {XwyaForm,XwyaButton} from "@/rely/page"
 import type { PropType } from 'vue'
 import type { FormRules } from "naive-ui"
@@ -14,7 +14,7 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<Dict.DictTypeInfo>,
+    type: Object as PropType<Dict.DictTypeRow>,
     default:()=> {}
   },
   userInfo: {
@@ -23,7 +23,7 @@ const props = defineProps({
   },
 })
 const { defaultOptions} = useUserStore()
-const formData = ref<Dict.DictTypeInfo>({
+const formData = ref<Dict.DictTypeRow>({
   ...props.row,
   username:props?.row?.username? props.row.username:props.userInfo.username,
 })
@@ -35,17 +35,22 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   { type: 'input', item: { label: '备注:', path: 'comment' }, content: {placeholder: '请输入备注'}},
 ]))
 const rules  = computed<FormRules>(() => {
-  return formItemData.value.reduce((acc: FormRules, cur:any, _) => {
-    if(cur.item.path==='is_default' || cur.item.path==="comment"  ) return acc 
-    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder,type:cur.item.ruleType }]
+  return formItemData.value.reduce((acc: FormRules, cur: FormItemRowStruct, _) => {
+    if(cur.item.path==='is_default' || cur.item.path==="comment") return acc
+    acc[cur.item.path!] = [{ required: true, trigger: [],message:cur.content?.placeholder,type:cur.item.ruleType }]
     return acc
   }, {})
 })
 const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
-    if (errors) return 
+  validate()(async (errors) => {
+    if (errors) return
     loading.value = true
-    const res = await generateDictType({...formData.value})
+    let res :any
+    if(formData.value?.id && formData.value?.id>0){
+      res = await updateDictType({...formData.value})
+    }else{
+      res = await createDictType({...formData.value})
+    }
   if (res.code === 200) { 
     props.getData()
     props.close()

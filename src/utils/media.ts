@@ -26,15 +26,15 @@ class Media {
       this.onDataAvailable();
       this.setupAudioProcessing(stream);
       document.body.appendChild(el);
-    } catch (err:any) {
+    } catch (err: unknown) {
       if (this.errorHandle) {
-        this.errorHandle(err);
+        this.errorHandle(err instanceof Error ? err : new Error(String(err)));
       }
     }
   }
 
   setupAudioProcessing(stream: MediaStream): void {
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.source = this.audioContext.createMediaStreamSource(stream);
     this.analyser = this.audioContext.createAnalyser();
     this.source.connect(this.analyser);
@@ -62,7 +62,7 @@ class Media {
     this.createWave()
   }
 
-  stop(f) {
+  stop(f: boolean) {
     this.falg = f
     this.mediaRecorder?.stop();
     this.isVisualizing = false; // 停止可视化
@@ -86,7 +86,7 @@ class Media {
     this.successHandle = handle;
   }
 
-  onError(handle: (err: any) => void): void {
+  onError(handle: (err: Error) => void): void {
     this.errorHandle = handle;
   }
 

@@ -27,10 +27,9 @@ const pagination = computed<PaginationProps>(() => ({
   },
 }))
 
-const initColumns = (): DataTableColumns<Log.LoggerInfo> => {
-  return [
+const columns: DataTableColumns<Log.LoggerInfo> =[
     {
-      title: '序号',
+      title: 'ID',
       key: 'id',
       width: 60,
     },
@@ -87,7 +86,6 @@ const initColumns = (): DataTableColumns<Log.LoggerInfo> => {
       key: "create_time",
     }
   ]
-}
 const getData = async () => {
   loading.value = true;
   const res = await api.system.getLogList(page)
@@ -104,7 +102,7 @@ onMounted(() => {
 
 <template>
   <div class="h-full">
-    <XwyaTable class="h-full"  :scroll-y="true"   :columns="initColumns()" :data="data" :pagination="pagination"
+    <XwyaTable class="h-full"  :scroll-y="true"   :columns="columns" :data="data" :pagination="pagination"
       :loading="loading" />
   </div>
 </template>

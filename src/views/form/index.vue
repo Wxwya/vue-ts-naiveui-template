@@ -23,7 +23,7 @@
     </div>
     <div class="border-0 border-l-4 border-solid border-green-400 text-2xl font-bold pl-4 ">动态表单示例(纵向必须加row-flex)</div>
     <div class="my-10 mx-2" >
-      <XwyaForm  row-flex :rules="rules" label-width="120px" label-placement="left" :item-list="queryFormItem3"
+      <XwyaForm   :rules="rules" label-width="120px" label-placement="left" :item-list="queryFormItem3"
         v-model="queryFormData" >
         <template #default="{ validate, reset }">
           <div class="flex justify-center items-center gap-2 w-full">
@@ -51,19 +51,18 @@
 import { ref, computed } from 'vue'
 import {NButton} from 'naive-ui'
 import XwyaForm from '@/components/XwyaForm/index.vue'
-import type { FormRules } from 'naive-ui'
+import type { FormRules,CheckboxGroupProps,SelectProps,RadioGroupProps,CascaderProps } from 'naive-ui'
 class QueryFormData {
   remarks = ''
   address = ""
   remarks221214222 = ""
   a1 = ""
   b1 = ""
-  b2 = ""
+  b2: number | null = null
   b3 = ""
-  a18 = void 0
-
+  a18: number | null = null
 }
-const queryFormData = ref<any>(new QueryFormData())
+const queryFormData = ref<QueryFormData>(new QueryFormData())
 const defaultOptions:GlobalOptions<number>[]= [{ label: "选项1", value: 1 }, { label: "选项2", value: 2 }]
 const oo = computed(() => {
   return ['@gmail.com', '@163.com', '@qq.com'].map((suffix) => {
@@ -74,9 +73,9 @@ const oo = computed(() => {
     }
   })
 })
-const queryFormItem = [
+const queryFormItem:FormItemRowStruct[] = [
   { type: 'input', item: { label: '地址:', path: 'address111' }, content: {placeholder: '请输入地址'}   },
-  { type: 'select', item: { label: '备注:', path: 'remarks222' }, content: {placeholder: '请输入备注',options: defaultOptions}     },
+  { type: 'select', item: { label: '备注:', path: 'remarks222' }, content: {placeholder: '请输入备注',options: defaultOptions}  as SelectProps    },
   { type: 'input',itemWidth:"260px", item: {label: '备注:', path: 'remarks1'},content: {placeholder: '请输入地址'}  },
   { type: 'input',itemWidth:"260px",item: {label: '备注:', path: 'remarks2'}, content: {placeholder: '请输入地址'}  },
 ]
@@ -85,23 +84,23 @@ const queryFormItem2 = ref<FormItemRowStruct[]>([
   { type: 'input', item: { label: 'input输入框:', path: 'a1' }, content: {placeholder: '请输入地址'}},
   { type: 'input', item: {label: 'textarea文本框:', path: 'a2'}, content:{type:"textarea",placeholder: '请输入地址'}   },
   { type: 'auto', item: { path: 'a3',label: 'auto输入框:'  }, content: {options: oo.value} },
-  { type: 'select', item: { label: 'select多选:', path: 'a5' }, content: {placeholder: '请输入备注',multiple: true,options:defaultOptions}},
-  { type: 'select', item: { label: 'select单选:', path: 'a5' }, content: {placeholder: '请输入备注',options:defaultOptions}},
+  { type: 'select', item: { label: 'select多选:', path: 'a5' }, content: {placeholder: '请输入备注',multiple: true,options:defaultOptions}as SelectProps},
+  { type: 'select', item: { label: 'select单选:', path: 'a5' }, content: {placeholder: '请输入备注',options:defaultOptions} as SelectProps},
   { type: 'date', item: { label: 'date日期:', path: 'a6' }, content: {placeholder: '请输入备注'}},
   { type: 'date', item: { label: 'datetime日期加时间:', path: 'a7' }, content: {type:"datetime",placeholder: '请输入备注'}},
   { type: 'date', item: { label: 'daterange日期范围:', path: 'a8', },content: {type: "daterange",placeholder: '请输入备注'} ,  },
-  { type: 'check', item: { label: 'check多选复选框:', path: 'a9' }, content:{options: defaultOptions}},
-  { type: 'radio', item: { label: 'radio单选按钮:', path: 'a10', },content: {options:defaultOptions}},
+  { type: 'check', item: { label: 'check多选复选框:', path: 'a9' }, content:{options: defaultOptions} as CheckboxGroupProps },
+  { type: 'radio', item: { label: 'radio单选按钮:', path: 'a10', },content: {options:defaultOptions} as RadioGroupProps},
   { type: 'tags', item: {label: 'tags标签:', path: 'a11', }},
   { type: 'number', item: {label: 'number计数器:', path: 'a12',} },
   { type: 'switch', item: {label: 'switch开关:', path: 'a13'}},
-  { type: 'cascader', item: { label: 'cascader级联选择器:', path: 'a14', }, content: {options:defaultOptions}   },
+  { type: 'cascader', item: { label: 'cascader级联选择器:', path: 'a14', }, content: {options:defaultOptions} as CascaderProps   },
   { type: 'transfer', item: { label: 'transfer穿梭框:', path: 'a15', },content: {options: defaultOptions}  },
   { type: 'upload', item: { label: '图片上传:', path: 'a16' } },
 ])
 const rules= computed<FormRules>(() => {
-  return queryFormItem2.value.reduce((acc: FormRules, cur:any, _) => {
-    acc[(cur as FormItemRowStruct).item!.path!] = [{ required: true, trigger: ['blur'], }]
+  return (queryFormItem2.value as Array<{ item: { path?: string } }>).reduce((acc: FormRules, cur) => {
+    acc[cur.item.path!] = [{ required: true, trigger: ['blur'], }]
     return acc
   }, {} as FormRules)
 })
@@ -129,7 +128,7 @@ const onReset = (f: Function) => {
   queryFormData.value = new QueryFormData()
   f()
 }
-const search = (state, change) => {
+const search = (state: boolean, change: () => void) => {
   if (state) {
     window.$msg.success('搜索')
   } else {

@@ -9,11 +9,13 @@ import Checker from 'vite-plugin-checker'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 import { visualizer } from 'rollup-plugin-visualizer'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 type Drop = 'console' | 'debugger'
 
 // !如果使用Cdn打包的话 unplugin-auto-import 和 unplugin-vue-components  会失效需要 手动引入
 const plugins = [
   vue(),
+  vueJsx(),
   Checker({
     vueTsc: {
       tsconfigPath: './tsconfig.app.json',

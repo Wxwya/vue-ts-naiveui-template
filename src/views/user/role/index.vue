@@ -1,9 +1,8 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 // solar--user-bold 图标展示
 import { computed, ref, inject, h,onMounted,usePage,closeModal } from "@/rely/lib"
 import { XwyaForm, XwyaPopover, XwyaTable, XwyaButton, XwyaIcon,NButton } from "@/rely/page"
 import type { PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
-import Acruibs from "./actions.vue"
 import UpModal from "./upModal.vue"
 class QueryForm { 
   role_name: string = ''
@@ -71,7 +70,7 @@ const onBatchDelete = () => {
     }
   })
 }
-const onDelete = async (id?:number) => {
+const onDelete = async (id?:any) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.role.delRole( id ? [id] : rowIds.value )
   if (res.code === 200) { 
@@ -89,12 +88,12 @@ const onOpenModal = (title:string, row?:Role.RoleTableRow) => {
    content: () => h(UpModal, {close:()=>closeModal(m),row,getData})
   })
 }
-const initColumns = ():DataTableColumns<Role.RoleTableRow> => {
-  return [
+const columns :DataTableColumns<Role.RoleTableRow> =[
     {
       type: 'selection',
       fixed: 'left'
     },
+    { title: 'ID', key: 'id', className: "w-[80px]" },
     {
       title: '角色名称',
       key: 'role_name'
@@ -111,12 +110,25 @@ const initColumns = ():DataTableColumns<Role.RoleTableRow> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row) {
-        return h(Acruibs, {upData:()=>onOpenModal("修改角色",row),delData:()=>onDelete(row.id) })
-      }
+      render:(row)=>(
+        <div class=" flex items-center gap-2">
+         <NButton v-has="xwya:role:update" text type="info" onClick={()=>onOpenModal("修改角色", row)} >修改</NButton>
+          <NButton v-has="xwya:role:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
+          </div>
+      )
     }
 
   ]
+const onDeleteTips =  (row:Role.RoleTableRow)=>{
+   window.$dialog.warning({
+    title: '温馨提示',
+    content: `是否确认删除 ${row.description} 角色?`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      onDelete(row.id)
+    }
+  })
 }
 onMounted(() => { 
   getData()
@@ -144,7 +156,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable  class="flex-1" :scroll-y="true" :row-key="(r)=>r.id" :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable  class="flex-1" :scroll-y="true" :row-key="(r)=>r.id" :columns="columns" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 

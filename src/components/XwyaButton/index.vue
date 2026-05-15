@@ -1,5 +1,5 @@
 <template>
-  <n-button v-bind="$attrs">
+  <n-button v-bind="$attrs" >
     <template #icon v-if="icon">
       <n-icon :size="iconSize">
         <XwyaIcon :icon="icon" />
@@ -28,5 +28,7 @@ defineProps({
     default: 24
   }
 })
+
+
 </script>
 <style lang="scss" scoped></style>

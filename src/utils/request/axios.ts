@@ -20,11 +20,15 @@ class AxiosRequest {
       clearTimeout(timer)
       return options.requestHooks!.afterRequest<T>(response.data, config,response)
     } catch (err:any) {
+      clearTimeout(timer)
+      if (err?.response) {
+        return options.requestHooks!.afterRequest<T>(err.response.data ?? {}, config, err.response)
+      }
       window.$msg.error(err.message)
       // console.error(err);
       if ((options.isRetry &&!!options.retryCount && options.retryCount <= 0) || !options.isRetry) {
         console.error('请求错误:', err)
-        return {code: 0, data: null, msg: err.message || '发送请求错误'} 
+        return {code: 0, data: null, message: err.message || '发送请求错误'} 
       }
     }
     if (options.isRetry &&!!options.retryCount && options.retryCount > 0 && options.isTimeout) {
@@ -33,7 +37,7 @@ class AxiosRequest {
       const rquestOptionsBody = await options.requestHooks!.beforeRequest(options, config)
       return this.request<T>( rquestOptionsBody, config)
     }
-    return {code: 0, data: null, msg: '请求失败'}
+    return {code: 0, data: null, message: '请求失败'}
   }
 }
 

@@ -1,17 +1,16 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 //  solar--link-square-bold
 // solar--settings-bold
 import {computed, inject, ref,onMounted,useRouter,closeModal,useUserStore,usePage,h }from "@/rely/lib"
 import type {PaginationProps, DataTableColumns, DataTableRowKey } from "@/rely/page"
 import {XwyaTable,XwyaForm,XwyaPopover,XwyaButton,XwyaIcon,NButton } from "@/rely/page"
-import Acruibs from "./actions.vue"
 import UpModal from './upModal.vue';
 class QueryForm { 
   type_name: string = ''
   username: string = ''
 }
 const api = inject("api") as Api
-const { data, page, total, loading } = usePage<Dict.DictTypeInfo>() 
+const { data, page, total, loading } = usePage<Dict.DictTypeRow>() 
 const { userInfo} = useUserStore()
 const { push} = useRouter()
 const queryFormData = ref(new QueryForm())
@@ -19,7 +18,6 @@ const rowIds = ref<DataTableRowKey[]>([])
 const isSearch = ref(false)
 const queryFormItem = computed<FormItemRowStruct[]>(() => ([
   { type: "input", item: { label: '字典类型', path: 'type_name', }, content: { placeholder: '请输入字典类型' } },
-  { type: "input", item: { label: '创建者', path: 'username', }, content: { placeholder: '请输入创建者' } },
 ]
 ))
 const onSelect = (keys:DataTableRowKey[]) => {
@@ -74,6 +72,17 @@ const onBatchDelete = () => {
     }
   })
 }
+const onDeleteTips =  (row:Dict.DictTypeRow)=>{
+   window.$dialog.warning({
+    title: '温馨提示',
+    content: `是否确认删除 ${row.dict_name} 字典类型?`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      onDelete(row.id)
+    }
+  })
+}
 const onDelete = async (id?:number) => {
   const m = window.$msg.loading('正在删除', { duration: 0 })
   const res = await api.dict.delDictType( id ? [id] : rowIds.value )
@@ -82,7 +91,7 @@ const onDelete = async (id?:number) => {
   }
   m.destroy()
 }
-const onOpenModal = (title:string, row?:Dict.DictTypeInfo) => { 
+const onOpenModal = (title:string, row?:Dict.DictTypeRow) => { 
   const m = window.$modal.create({
     title,
     preset: 'card',
@@ -93,12 +102,12 @@ const onOpenModal = (title:string, row?:Dict.DictTypeInfo) => {
   })
 }
 
-const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
-  return [
+const columns :DataTableColumns<Dict.DictTypeRow> = [
     {
       type: 'selection',
       fixed: 'left'
     },
+     { title: 'ID', key: 'id', className: "w-[80px]" },
     {
       title: '字典名称',
       key: 'dict_name'
@@ -110,7 +119,7 @@ const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
     {
       title: "是否系统默认",
       key: "is_default",
-      render(row:Dict.DictTypeInfo) { 
+      render(row:Dict.DictTypeRow) { 
         return row.is_default ==='Y'? '是' : '否'
       }
     },
@@ -119,8 +128,8 @@ const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
       key: 'comment'
     },
     {
-      title: '创建者',
-      key: 'username'
+      title: '创建者ID',
+      key: 'user_id'
     },
     {
       title: "创建时间",
@@ -130,13 +139,17 @@ const initColumns = ():DataTableColumns<Dict.DictTypeInfo> => {
       align: "center",
       title: "操作",
       key: "actions",
-      render(row:Dict.DictTypeInfo) {
-        return h(Acruibs, { upData: () => onOpenModal("修改字典类型", row), delData: () => onDelete(row.id), toSub: () => push(`/system/subDict?id=${row.id!}`)  })
-      }
+       render:(row)=>(<div class="flex items-center gap-2">
+        <NButton v-has="xwya:dict:update" text type="info" onClick={()=>onOpenModal("修改菜单", row)} >修改</NButton>
+         <NButton v-has="xwya:dict:data" text type="info" onClick={() => push(`/system/subDict?id=${row.id!}`)} >数据管理</NButton>
+          <NButton v-has="xwya:dict:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
+      </div>)
+      // render(row:Dict.DictTypeRow) {
+      //   return h(Acruibs, { upData: () => onOpenModal("修改字典类型", row), delData: () => onDelete(row.id), toSub: () => push(`/system/subDict?id=${row.id!}`)  })
+      // }
     }
 
   ]
-}
 onMounted(() => { 
   getData()
 })
@@ -162,7 +175,7 @@ onMounted(() => {
         </div>
       </template>
     </XwyaForm>
-    <XwyaTable class="flex-1" :scroll-y="true"  :columns="initColumns()" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
+    <XwyaTable class="flex-1" :scroll-y="true"  :columns="columns" :data="data"  :onSelect="onSelect " :pagination="pagination" :loading="loading" />
   </div>
 </template>
 <style lang="scss" scoped></style>

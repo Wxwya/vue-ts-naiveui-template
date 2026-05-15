@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue"
 import {XwyaForm,XwyaButton } from "@/rely/page"
-import { generatePermissions } from '@/api/permissions'; 
+import { createPermissions,updatePermissions } from '@/api/permissions'; 
 import type {PropType} from "vue"
 import type { FormRules } from "naive-ui"
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
     default: () => { }
   },
   row: {
-    type: Object as PropType<Permissions.PermissionsInfo>,
+    type: Object as PropType<Permissions.PermissionsRow>,
     default: {}
   },
   parent_id: {
@@ -26,7 +26,7 @@ const props = defineProps({
     default: ''
   }
 })
-const formData = ref<Permissions.PermissionsInfo>({
+const formData = ref<Permissions.PermissionsRow>({
   ...props.row,
   permission_name:props.prefix?props.prefix:props.row?.permission_name
 });
@@ -36,14 +36,14 @@ const formItemData = computed<FormItemRowStruct[]>(() => ([
   {type: 'input', item: {label: '权限描述', path: 'description'}, content: {placeholder: '请输入权限描述',},   },
 ]))
 const rules= computed(() => {
-  return formItemData.value.reduce((acc:FormRules, cur:any, _) => {
-    acc[cur.item.path] = [{ required: true, trigger: [],message:cur.content.placeholder}]
+  return formItemData.value.reduce((acc:FormRules, cur: FormItemRowStruct, _) => {
+    acc[cur.item.path!] = [{ required: true, trigger: [],message:cur.content?.placeholder}]
     return acc
   }, {})
 })
 const submit = async (validate: FormValidateFunc) => { 
-  validate()(async (errors: any) => { 
-    if (errors) return 
+  validate()(async (errors) => {
+    if (errors) return
     loading.value = true
     if (props.parent_id) { 
       if (!formData.value.permission_name.startsWith(props.prefix)) { 
@@ -57,7 +57,13 @@ const submit = async (validate: FormValidateFunc) => {
       return
     }
     }
-    const res = await generatePermissions({...formData.value, parent_id: Number(props.parent_id)})
+    let res:any
+    if(formData.value.id>0){
+      res = await updatePermissions({...formData.value, parent_id: Number(props.parent_id)}) 
+    }else{
+      res = await createPermissions({...formData.value, parent_id: Number(props.parent_id)})
+    }
+    // const res = await generatePermissions()
   if (res.code === 200) { 
     props.getData()
     props.close()

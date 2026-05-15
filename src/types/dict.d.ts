@@ -1,5 +1,5 @@
 declare namespace Dict {
-  interface DictTypeInfo {
+  interface DictTypeRow {
     id?: number;
     type_name: string;     
     username: string;      
@@ -8,7 +8,7 @@ declare namespace Dict {
     is_default: string;
     create_time: string;  
   }
-  interface DictInfo {
+  interface DictRow {
     id?: number;
     dict_type_id: number;
     dict_label: string;
@@ -18,13 +18,13 @@ declare namespace Dict {
     username: string;
     create_time?: string; 
   }
-  interface GetDictListStructApi { 
-    list: DictInfoInfo[];
-    total: numberl;
+  interface GetDictListStructApi {
+    list: DictRow[];
+    total: number;
   }
-  interface GetDictTypeListStructApi { 
-    list: DictTypeInfo[];
-    total: numberl;
+  interface GetDictTypeListStructApi {
+    list: DictTypeRow[];
+    total: number;
   }
   
 }
