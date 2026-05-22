@@ -141,7 +141,7 @@ const columns :DataTableColumns<Dict.DictTypeRow> = [
       key: "actions",
        render:(row)=>(<div class="flex items-center gap-2">
         <NButton v-has="xwya:dict:update" text type="info" onClick={()=>onOpenModal("修改菜单", row)} >修改</NButton>
-         <NButton v-has="xwya:dict:data" text type="info" onClick={() => push(`/system/subDict?id=${row.id!}`)} >数据管理</NButton>
+         <NButton v-has="xwya:dict:data" text type="info" onClick={() => push(`/system/sub-dict?id=${row.id!}`)} >数据管理</NButton>
           <NButton v-has="xwya:dict:delete" text type="error" onClick={() => onDeleteTips(row)} >删除</NButton>
       </div>)
       // render(row:Dict.DictTypeRow) {
